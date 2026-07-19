@@ -636,10 +636,12 @@
     shell?.classList.add("is-in");
 
     const navH = navEl?.offsetHeight || 72;
-    const targetY = Math.max(
-      0,
-      chatTarget.getBoundingClientRect().top + window.scrollY - navH
-    );
+    // offsetTop chain ignores CSS transforms (entrance animation)
+    let layoutTop = 0;
+    for (let el = chatTarget; el; el = el.offsetParent) {
+      layoutTop += el.offsetTop;
+    }
+    const targetY = Math.max(0, layoutTop - navH);
     const startY = window.scrollY;
     const distance = targetY - startY;
     if (Math.abs(distance) < 2) {
