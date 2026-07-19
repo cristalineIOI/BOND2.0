@@ -795,26 +795,6 @@ button {
   100% { opacity: 0; transform: scale(2.8); }
 }
 
-.ph-home-hint {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  right: 0;
-  bottom: 78px;
-  text-align: center;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(250, 248, 246, 0.45);
-  opacity: 0;
-  pointer-events: none;
-}
-
-.ph-scene[data-scene="home"].is-active .ph-home-hint {
-  animation: phRise 0.6s var(--ease) 0.7s forwards;
-}
-
 @keyframes phRise {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
