@@ -47,7 +47,7 @@
 
   setTimeout(() => {
     callStarted = true;
-    if (phoneTimerLabel) phoneTimerLabel.textContent = "Appel en cours";
+    if (phoneTimerLabel) phoneTimerLabel.textContent = "Call in progress";
   }, 900);
 
   setInterval(() => {
@@ -112,7 +112,7 @@
   }
 
   function timeNow() {
-    return new Date().toLocaleTimeString("fr-FR", {
+    return new Date().toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
     });
@@ -123,7 +123,7 @@
     wrap.className = `msg ${role}`;
     wrap.innerHTML = `
       <div class="msg-bubble">${html}</div>
-      <div class="msg-meta">${role === "user" ? "Vous" : FREDO} · ${timeNow()}</div>
+      <div class="msg-meta">${role === "user" ? "You" : FREDO} · ${timeNow()}</div>
     `;
     stream.appendChild(wrap);
     scrollBottom();
@@ -152,37 +152,37 @@
 
   function parseIntent(text) {
     const lower = text.toLowerCase();
-    let who = "le contact indiqué";
+    let who = "the contact you named";
     let why = text.trim();
-    let constraints = "Respecter le ton professionnel BOND.";
+    let constraints = "Keep a professional BOND tone.";
 
-    if (/cabinet\s+martin/i.test(text)) who = "Cabinet Martin";
+    if (/martin/i.test(text)) who = "Martin Office";
     else if (/acme/i.test(text)) who = "Acme Corp";
-    else if (/banque/i.test(text)) who = "Banque — service entreprises";
-    else if (/select|restaurant/i.test(text)) who = "Restaurant Le Select";
+    else if (/bank|banque/i.test(text)) who = "Bank — business desk";
+    else if (/select|restaurant/i.test(text)) who = "Le Select Restaurant";
     else {
-      const m = text.match(/appelle?\s+([^,.]+?)(?:\s+pour|\s+au|\s+demain|,|\.|$)/i);
-      if (m) who = m[1].trim().replace(/^le\s+|^la\s+|^l'/i, (x) => x);
+      const m = text.match(/(?:call|appelle?)\s+([^,.]+?)(?:\s+to|\s+about|\s+for|\s+pour|\s+au|\s+tomorrow|\s+demain|,|\.|$)/i);
+      if (m) who = m[1].trim().replace(/^(the|le|la|l'|my|ma|mon)\s+/i, "");
     }
 
-    if (/confirmer|rendez-vous|rdv|board/i.test(lower)) {
-      why = "Confirmer le rendez-vous du board";
-    } else if (/contrat|signature|relance/i.test(lower)) {
-      why = "Obtenir une date de signature pour le contrat Q3";
-    } else if (/virement|sepa|statut/i.test(lower)) {
-      why = "Vérifier le statut du virement SEPA";
-    } else if (/réserver|table/i.test(lower)) {
-      why = "Réserver une table";
+    if (/confirm|meeting|board|rendez-vous|rdv/i.test(lower)) {
+      why = "Confirm the board meeting";
+    } else if (/contract|signature|follow\s*up|relance|contrat/i.test(lower)) {
+      why = "Get a signature date for the Q3 contract";
+    } else if (/transfer|sepa|status|virement|statut/i.test(lower)) {
+      why = "Check the status of the SEPA transfer";
+    } else if (/book|reserv|table/i.test(lower)) {
+      why = "Book a table";
     }
 
     const bits = [];
-    if (/avant\s+11h|demain/i.test(lower)) bits.push("Appeler demain avant 11h");
-    if (/jeudi/i.test(lower)) bits.push("Si indisponible → proposer jeudi");
-    if (/courtois|pas de pression/i.test(lower)) bits.push("Ton courtois, sans pression");
-    if (/cette semaine/i.test(lower)) bits.push("Objectif : date cette semaine");
-    if (/référence|reference/i.test(lower)) bits.push("Noter le n° de référence");
-    if (/42\s?000|horizon/i.test(lower)) bits.push("Montant 42 000 € · Horizon SAS");
-    if (/quatre|4|21\s*h|gabriel/i.test(lower)) bits.push("4 personnes · 21 h · Gabriel");
+    if (/before\s+11|avant\s+11|tomorrow|demain/i.test(lower)) bits.push("Call tomorrow before 11 AM");
+    if (/thursday|jeudi/i.test(lower)) bits.push("If unavailable → suggest Thursday");
+    if (/courteous|no pressure|courtois|pas de pression/i.test(lower)) bits.push("Courteous tone, no pressure");
+    if (/this week|cette semaine/i.test(lower)) bits.push("Goal: date this week");
+    if (/reference|référence/i.test(lower)) bits.push("Note the reference number");
+    if (/42[\s,]?000|horizon/i.test(lower)) bits.push("Amount €42,000 · Horizon SAS");
+    if (/four|quatre|4|9\s*pm|21\s*h|gabriel/i.test(lower)) bits.push("4 guests · 9 PM · Gabriel");
     if (bits.length) constraints = bits.join(" · ");
 
     return { who, why, constraints, raw: text.trim() };
@@ -190,18 +190,18 @@
 
   function planHtml(intent) {
     return `
-      Je prépare le plan d’appel. Voici ce que je vais exécuter :
+      Preparing the call plan. Here’s what I’ll execute:
       <div class="plan-card">
-        <h4>Plan d’appel</h4>
+        <h4>Call plan</h4>
         <dl>
           <div class="plan-row"><dt>Contact</dt><dd>${escapeHtml(intent.who)}</dd></div>
-          <div class="plan-row"><dt>Objectif</dt><dd>${escapeHtml(intent.why)}</dd></div>
-          <div class="plan-row"><dt>Contraintes</dt><dd>${escapeHtml(intent.constraints)}</dd></div>
-          <div class="plan-row"><dt>Canal</dt><dd>Ligne BOND · ${FREDO} Voice</dd></div>
+          <div class="plan-row"><dt>Objective</dt><dd>${escapeHtml(intent.why)}</dd></div>
+          <div class="plan-row"><dt>Constraints</dt><dd>${escapeHtml(intent.constraints)}</dd></div>
+          <div class="plan-row"><dt>Channel</dt><dd>BOND line · ${FREDO} Voice</dd></div>
         </dl>
         <div class="plan-actions">
-          <button type="button" class="approve" data-action="approve">Valider &amp; appeler</button>
-          <button type="button" class="edit" data-action="edit">Ajuster</button>
+          <button type="button" class="approve" data-action="approve">Approve &amp; call</button>
+          <button type="button" class="edit" data-action="edit">Adjust</button>
         </div>
       </div>
     `;
@@ -225,54 +225,54 @@
     const who = intent.who;
     if (/martin/i.test(who)) {
       return {
-        asked: "Confirmer le rendez-vous board",
-        got: "Confirmé — mercredi 10:30, salle B",
-        decisions: "Créneau maintenu · invitation mise à jour",
-        next: "Préparer le deck avant mardi 18h",
+        asked: "Confirm the board meeting",
+        got: "Confirmed — Wednesday 10:30 AM, Room B",
+        decisions: "Slot kept · invite updated",
+        next: "Prepare the deck before Tuesday 6 PM",
       };
     }
     if (/acme/i.test(who)) {
       return {
-        asked: "Date de signature contrat Q3",
-        got: "Signature prévue vendredi 16h (DocuSign)",
-        decisions: "Clause 4.2 acceptée telle quelle",
-        next: "Envoyer le packet final demain matin",
+        asked: "Q3 contract signature date",
+        got: "Signature scheduled Friday 4 PM (DocuSign)",
+        decisions: "Clause 4.2 accepted as-is",
+        next: "Send the final packet tomorrow morning",
       };
     }
-    if (/banque/i.test(who)) {
+    if (/bank/i.test(who)) {
       return {
-        asked: "Statut virement SEPA 42 000 €",
-        got: "Exécuté · réf. SEPA-88421-HX",
-        decisions: "Aucun blocage · crédit J+1",
-        next: "Notifier Horizon SAS du crédit attendu",
+        asked: "Status of €42,000 SEPA transfer",
+        got: "Executed · ref. SEPA-88421-HX",
+        decisions: "No hold · credit T+1",
+        next: "Notify Horizon SAS of expected credit",
       };
     }
     if (/select|restaurant/i.test(who)) {
       return {
-        asked: "Réserver table pour 4 à 21 h",
-        got: "Confirmé · table 12 · nom Gabriel",
-        decisions: "Réservation tenue 15 min",
-        next: "SMS de confirmation envoyé",
+        asked: "Book a table for 4 at 9 PM",
+        got: "Confirmed · table 12 · name Gabriel",
+        decisions: "Reservation held 15 min",
+        next: "Confirmation SMS sent",
       };
     }
     return {
       asked: intent.why,
-      got: "Objectif atteint · interlocuteur joignable",
-      decisions: "Accord verbal confirmé",
-      next: "FREDO a noté un follow-up sous 48h",
+      got: "Objective met · contact reached",
+      decisions: "Verbal agreement confirmed",
+      next: "FREDO logged a follow-up within 48h",
     };
   }
 
   async function runCall(intent) {
-    setStatus("calling", "Appel en cours…");
+    setStatus("calling", "Call in progress…");
     addMsg(
       "assistant",
-      `C’est parti. J’appelle <strong>${escapeHtml(intent.who)}</strong>.
+      `On it. Calling <strong>${escapeHtml(intent.who)}</strong>.
       <div class="call-live">
         <div class="call-wave" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
         <div>
-          <strong>Ligne ouverte</strong>
-          <span>${FREDO} · chiffrement bout-en-bout · enregistrement désactivé</span>
+          <strong>Line open</strong>
+          <span>${FREDO} · end-to-end encryption · recording off</span>
         </div>
       </div>`
     );
@@ -280,28 +280,28 @@
     await sleep(2800);
     removeTyping();
     const r = resultFor(intent);
-    setStatus("done", "Appel terminé");
+    setStatus("done", "Call complete");
 
     addMsg(
       "assistant",
-      `Appel terminé. Voici le compte-rendu :
+      `Call complete. Here’s the summary:
       <div class="result-card">
         <header>
-          <span>Résultat</span>
-          <span>✓ Complet</span>
+          <span>Outcome</span>
+          <span>✓ Complete</span>
         </header>
         <ul>
-          <li><em>Demandé</em><span>${withFredoMark(r.asked)}</span></li>
-          <li><em>Obtenu</em><span>${withFredoMark(r.got)}</span></li>
-          <li><em>Décisions</em><span>${withFredoMark(r.decisions)}</span></li>
-          <li><em>Prochaines étapes</em><span>${withFredoMark(r.next)}</span></li>
+          <li><em>Asked</em><span>${withFredoMark(r.asked)}</span></li>
+          <li><em>Obtained</em><span>${withFredoMark(r.got)}</span></li>
+          <li><em>Decisions</em><span>${withFredoMark(r.decisions)}</span></li>
+          <li><em>Next steps</em><span>${withFredoMark(r.next)}</span></li>
         </ul>
       </div>
-      Je peux enchaîner sur autre chose — ou mettre à jour votre to-do BOND.`
+      I can take on something else — or update your BOND to-do.`
     );
 
     await sleep(600);
-    setStatus("idle", "En ligne");
+    setStatus("idle", "Online");
   }
 
   async function respond(text) {
@@ -330,7 +330,7 @@
         "click",
         async () => {
           cleanup();
-          addMsg("user", "Validé. Lance l’appel.");
+          addMsg("user", "Approved. Place the call.");
           addTyping();
           await sleep(700);
           removeTyping();
@@ -346,7 +346,7 @@
           cleanup();
           addMsg(
             "assistant",
-            "Dites-moi ce qu’il faut ajuster — contact, créneau, ton, ou objectif — et je recalcule le plan."
+            "Tell me what to adjust — contact, timing, tone, or objective — and I’ll rebuild the plan."
           );
           resolve();
         },
@@ -373,11 +373,11 @@
   function welcome() {
     stream.innerHTML = "";
     hints.style.display = "flex";
-    setStatus("idle", "En ligne");
+    setStatus("idle", "Online");
     addMsg(
       "assistant",
-      `Bonjour — je suis <strong>${FREDO}</strong>, l’agent vocal de BOND 2.0.<br><br>
-      Dites-moi qui appeler, pourquoi, et vos contraintes. Je construis le plan, je vous demande validation si besoin, puis je passe l’appel.`
+      `Hi — I’m <strong>${FREDO}</strong>, the voice agent for BOND 2.0.<br><br>
+      Tell me who to call, why, and your constraints. I’ll build the plan, ask for approval if needed, then place the call.`
     );
   }
 
