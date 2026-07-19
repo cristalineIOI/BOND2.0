@@ -285,7 +285,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   var HREF = "/fredo/";
   var MARK = "<span class=\"fredo-mark\" aria-label=\"Fredo\">Fred<span class=\"pill-o\" aria-hidden=\"true\"></span></span>";
   function inject() {
-    document.querySelectorAll('[data-framer-name="menu-w"] a[data-framer-name="link"]').forEach(function (a) {
+    document.querySelectorAll('[data-framer-name="menu-w"] a[data-framer-name^="link"]').forEach(function (a) {
       var p = a.querySelector("p");
       if (!p || p.textContent.trim() !== "Security") return;
       var item = a.closest('[class*="-container"]') || a.parentElement;

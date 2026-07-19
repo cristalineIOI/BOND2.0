@@ -386,54 +386,90 @@
     return new Promise((r) => setTimeout(r, ms));
   }
 
-  function parseIntent(text) {
-    const lower = text.toLowerCase();
-    let who = "the contact you named";
-    let why = text.trim();
-    let constraints = "Keep a professional BOND tone.";
+  // —— Real phone task: talk to the Bond-OpenAI relay via the site proxy ——
+  const API_BASE = "/api";
+  const POLL_MS = 1800;
+  const TERMINAL_CALL_STATES = new Set([
+    "completed",
+    "no_answer",
+    "declined",
+    "failed",
+    "cancelled",
+  ]);
+  const E164_RE = /^\+[1-9]\d{7,14}$/;
 
-    if (/martin/i.test(text)) who = "Martin Office";
-    else if (/acme/i.test(text)) who = "Acme Corp";
-    else if (/bank|banque/i.test(text)) who = "Bank — business desk";
-    else if (/select|restaurant/i.test(text)) who = "Le Select Restaurant";
-    else {
-      const m = text.match(/(?:call|appelle?)\s+([^,.]+?)(?:\s+to|\s+about|\s+for|\s+pour|\s+au|\s+tomorrow|\s+demain|,|\.|$)/i);
-      if (m) who = m[1].trim().replace(/^(the|le|la|l'|my|ma|mon)\s+/i, "");
-    }
-
-    if (/confirm|meeting|board|rendez-vous|rdv/i.test(lower)) {
-      why = "Confirm the board meeting";
-    } else if (/contract|signature|follow\s*up|relance|contrat/i.test(lower)) {
-      why = "Get a signature date for the Q3 contract";
-    } else if (/transfer|sepa|status|virement|statut/i.test(lower)) {
-      why = "Check the status of the SEPA transfer";
-    } else if (/book|reserv|table/i.test(lower)) {
-      why = "Book a table";
-    }
-
-    const bits = [];
-    if (/before\s+11|avant\s+11|tomorrow|demain/i.test(lower)) bits.push("Call tomorrow before 11 AM");
-    if (/thursday|jeudi/i.test(lower)) bits.push("If unavailable → suggest Thursday");
-    if (/courteous|no pressure|courtois|pas de pression/i.test(lower)) bits.push("Courteous tone, no pressure");
-    if (/this week|cette semaine/i.test(lower)) bits.push("Goal: date this week");
-    if (/reference|référence/i.test(lower)) bits.push("Note the reference number");
-    if (/42[\s,]?000|horizon/i.test(lower)) bits.push("Amount €42,000 · Horizon SAS");
-    if (/four|quatre|4|9\s*pm|21\s*h|gabriel/i.test(lower)) bits.push("4 guests · 9 PM · Gabriel");
-    if (bits.length) constraints = bits.join(" · ");
-
-    return { who, why, constraints, raw: text.trim() };
+  function extractPhone(text) {
+    const m = text.match(/\+[1-9][0-9\s().-]{7,18}/);
+    if (!m) return null;
+    const normalized = m[0].replace(/[\s().-]/g, "");
+    return E164_RE.test(normalized) ? normalized : null;
   }
 
-  function planHtml(intent) {
+  function maskPhone(e164) {
+    const digits = (e164 || "").replace(/\D/g, "");
+    if (digits.length < 4) return "";
+    const cc = e164.startsWith("+") ? digits.slice(0, 2) : "";
+    return `${cc ? "+" + cc + " " : ""}•••• ••${digits.slice(-2)}`;
+  }
+
+  function detectLanguage(text) {
+    if (
+      /[àâçéèêëîïôûùü]/i.test(text) ||
+      /\b(appelle?r?|réserve|bonjour|merci|rendez-vous|demain|virement|numéro)\b/i.test(text)
+    ) {
+      return "fr";
+    }
+    return "en";
+  }
+
+  function deriveCaller(text) {
+    const m = text.match(
+      /\b(?:under|sous|au nom de|from|de la part de)\s+([A-Za-zÀ-ÿ][\wÀ-ÿ'.-]{1,40})/i
+    );
+    return m ? m[1].trim().replace(/[.,;:]+$/, "") : "BOND";
+  }
+
+  function deriveRecipientLabel(text) {
+    const m = text.match(
+      /\b(?:call|appelle?r?|ring|phone)\s+(?:the\s+|le\s+|la\s+|my\s+|mon\s+|ma\s+)?([^,.0-9+]{2,40}?)(?:\s+(?:at|on|to|about|for|au|pour|le|tomorrow|demain)\b|[,.]|$)/i
+    );
+    if (m) {
+      const label = m[1].trim().replace(/\s+/g, " ");
+      if (label && !/^\+?\d/.test(label)) return label.slice(0, 60);
+    }
+    return null;
+  }
+
+  function parseTask(text) {
+    const phone = extractPhone(text);
+    const goal =
+      text.replace(/\+[1-9][0-9\s().-]{7,18}/, "").replace(/\s+/g, " ").trim() ||
+      text.trim();
+    return {
+      raw: text.trim(),
+      destination_phone: phone,
+      caller_identity: deriveCaller(text),
+      recipient_label: deriveRecipientLabel(text),
+      call_goal: goal.slice(0, 500),
+      language: detectLanguage(text),
+    };
+  }
+
+  function planHtml(task) {
+    const dest = task.destination_phone ? escapeHtml(maskPhone(task.destination_phone)) : "—";
+    const recipient = task.recipient_label ? escapeHtml(task.recipient_label) : dest;
+    const lang = task.language === "fr" ? "French" : "English";
     return `
-      Preparing the call plan. Here’s what I’ll execute:
+      Here’s the call plan. Review it, then approve to place the real call.
       <div class="plan-card">
         <h4>Call plan</h4>
         <dl>
-          <div class="plan-row"><dt>Contact</dt><dd>${escapeHtml(intent.who)}</dd></div>
-          <div class="plan-row"><dt>Objective</dt><dd>${escapeHtml(intent.why)}</dd></div>
-          <div class="plan-row"><dt>Constraints</dt><dd>${escapeHtml(intent.constraints)}</dd></div>
-          <div class="plan-row"><dt>Channel</dt><dd>BOND line · ${FREDO} Voice</dd></div>
+          <div class="plan-row"><dt>Recipient</dt><dd>${recipient}</dd></div>
+          <div class="plan-row"><dt>Number</dt><dd>${dest}</dd></div>
+          <div class="plan-row"><dt>Objective</dt><dd>${escapeHtml(task.call_goal)}</dd></div>
+          <div class="plan-row"><dt>From</dt><dd>${escapeHtml(task.caller_identity)}</dd></div>
+          <div class="plan-row"><dt>Language</dt><dd>${lang}</dd></div>
+          <div class="plan-row"><dt>Channel</dt><dd>BOND line · ${FREDO} Voice · not recorded</dd></div>
         </dl>
         <div class="plan-actions">
           <button type="button" class="approve" data-action="approve">Approve &amp; call</button>
@@ -457,100 +493,229 @@
       .replace(/Fredo/g, FREDO_TITLE);
   }
 
-  function resultFor(intent) {
-    const who = intent.who;
-    if (/martin/i.test(who)) {
-      return {
-        asked: "Confirm the board meeting",
-        got: "Confirmed — Wednesday 10:30 AM, Room B",
-        decisions: "Slot kept · invite updated",
-        next: "Prepare the deck before Tuesday 6 PM",
-      };
+  const CALL_LABELS = {
+    dialing: "Ringing…",
+    in_progress: "Live · listen only",
+  };
+
+  let pollTimer = null;
+
+  function stopPolling() {
+    if (pollTimer) {
+      clearTimeout(pollTimer);
+      pollTimer = null;
     }
-    if (/acme/i.test(who)) {
-      return {
-        asked: "Q3 contract signature date",
-        got: "Signature scheduled Friday 4 PM (DocuSign)",
-        decisions: "Clause 4.2 accepted as-is",
-        next: "Send the final packet tomorrow morning",
-      };
-    }
-    if (/bank/i.test(who)) {
-      return {
-        asked: "Status of €42,000 SEPA transfer",
-        got: "Executed · ref. SEPA-88421-HX",
-        decisions: "No hold · credit T+1",
-        next: "Notify Horizon SAS of expected credit",
-      };
-    }
-    if (/select|restaurant/i.test(who)) {
-      return {
-        asked: "Book a table for 4 at 9 PM",
-        got: "Confirmed · table 12 · name Gabriel",
-        decisions: "Reservation held 15 min",
-        next: "Confirmation SMS sent",
-      };
-    }
-    return {
-      asked: intent.why,
-      got: "Objective met · contact reached",
-      decisions: "Verbal agreement confirmed",
-      next: "FREDO logged a follow-up within 48h",
-    };
   }
 
-  async function runCall(intent) {
-    setStatus("calling", "Call in progress…");
-    addMsg(
-      "assistant",
-      `On it. Calling <strong>${escapeHtml(intent.who)}</strong>.
+  async function api(path, options) {
+    const res = await fetch(API_BASE + path, {
+      headers: { "Content-Type": "application/json" },
+      ...options,
+    });
+    let data = null;
+    try {
+      data = await res.json();
+    } catch (_) {
+      data = null;
+    }
+    return { ok: res.ok, status: res.status, data };
+  }
+
+  function errorMessage(status, data) {
+    const code = (data && (data.error || data.code)) || "";
+    const map = {
+      destination_not_allowed:
+        "That number isn’t enrolled on the allowlist, so I can’t call it. Add it first, then try again.",
+      destination_forbidden:
+        "That number is blocked (emergency, premium or short-code). I won’t dial it.",
+      invalid_destination:
+        "That doesn’t look like a valid international number. Use E.164, e.g. +33612345678.",
+      consent_required:
+        "I need explicit consent from the recipient before I can place the call.",
+      call_busy:
+        "A call is already in progress — only one runs at a time. Try again once it ends.",
+      idempotency_conflict: "This task was already submitted. Send a fresh request.",
+      provider_unavailable:
+        "The phone provider rejected the call. Please try again shortly.",
+      relay_unreachable: "I can’t reach the call service right now. Please try again.",
+      rate_limited: "Too many requests right now — give it a few seconds.",
+      unauthorized: "The call service refused the request. Check the relay configuration.",
+      invalid_goal: "The objective is too long — keep it under 500 characters.",
+      needs_input: "I’m missing something to place the call. Tell me who to call and the number.",
+    };
+    return (
+      map[code] ||
+      (data && data.message) ||
+      `The call couldn’t be created (error ${status}).`
+    );
+  }
+
+  function outcomeLabel(status) {
+    return (
+      {
+        completed: "✓ Complete",
+        no_answer: "No answer",
+        declined: "Declined",
+        failed: "Failed",
+        cancelled: "Cancelled",
+      }[status] || "Done"
+    );
+  }
+
+  function elapsedSeconds(result) {
+    if (!result.connected_at) return 0;
+    const start = Date.parse(result.connected_at);
+    if (Number.isNaN(start)) return 0;
+    const end = result.ended_at ? Date.parse(result.ended_at) : Date.now();
+    return Math.max(0, Math.round((end - start) / 1000));
+  }
+
+  function liveCardHtml(status, callId, elapsed) {
+    const label = CALL_LABELS[status] || "Connecting…";
+    const timer = status === "in_progress" ? ` · ${formatCall(elapsed)}` : "";
+    return `
       <div class="call-live">
         <div class="call-wave" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
         <div>
-          <strong>Line open</strong>
-          <span>${FREDO} · end-to-end encryption · recording off</span>
+          <strong>${label}</strong>
+          <span>${FREDO} · end-to-end · not recorded${timer}</span>
         </div>
-      </div>`
-    );
+        <button type="button" class="edit" data-action="cancel" data-call="${escapeHtml(callId)}" style="margin-left:auto">Cancel</button>
+      </div>`;
+  }
 
-    await sleep(2800);
-    removeTyping();
-    const r = resultFor(intent);
-    setStatus("done", "Call complete");
-
-    addMsg(
-      "assistant",
-      `Call complete. Here’s the summary:
+  function resultCardHtml(task, result) {
+    const rows = [`<li><em>Asked</em><span>${withFredoMark(task.call_goal)}</span></li>`];
+    const details = result.details && typeof result.details === "object" ? result.details : {};
+    const obtained = result.answer || result.summary || details.answer;
+    if (obtained) rows.push(`<li><em>Obtained</em><span>${withFredoMark(String(obtained))}</span></li>`);
+    if (result.summary && result.summary !== obtained) {
+      rows.push(`<li><em>Summary</em><span>${withFredoMark(String(result.summary))}</span></li>`);
+    }
+    const actions = Array.isArray(result.next_actions) ? result.next_actions : [];
+    const cal = actions.find((a) => a && a.type === "calendar.create_event");
+    if (cal && cal.event) {
+      const when = cal.event.start ? new Date(cal.event.start).toLocaleString() : "";
+      rows.push(
+        `<li><em>Next step</em><span>Add to calendar: ${escapeHtml(cal.event.title || "event")}${when ? " · " + escapeHtml(when) : ""}</span></li>`
+      );
+    }
+    return `
       <div class="result-card">
         <header>
           <span>Outcome</span>
-          <span>✓ Complete</span>
+          <span>${escapeHtml(outcomeLabel(result.status))}</span>
         </header>
-        <ul>
-          <li><em>Asked</em><span>${withFredoMark(r.asked)}</span></li>
-          <li><em>Obtained</em><span>${withFredoMark(r.got)}</span></li>
-          <li><em>Decisions</em><span>${withFredoMark(r.decisions)}</span></li>
-          <li><em>Next steps</em><span>${withFredoMark(r.next)}</span></li>
-        </ul>
-      </div>
-      I can take on something else — or update your BOND to-do.`
-    );
+        <ul>${rows.join("")}</ul>
+      </div>`;
+  }
 
-    await sleep(600);
-    setStatus("idle", "Online");
+  function bindCancel(msg, callId) {
+    const btn = msg.querySelector('[data-action="cancel"]');
+    if (!btn) return;
+    btn.addEventListener(
+      "click",
+      async () => {
+        btn.disabled = true;
+        await api(`/calls/${encodeURIComponent(callId)}/cancel`, { method: "POST" });
+      },
+      { once: true }
+    );
+  }
+
+  function pollUntilDone(task, callId, liveMsg) {
+    return new Promise((resolve) => {
+      const bubble = liveMsg.querySelector(".msg-bubble");
+      const tick = async () => {
+        const res = await api(`/calls/${encodeURIComponent(callId)}`, { method: "GET" });
+        if (!res.ok || !res.data) {
+          pollTimer = setTimeout(tick, POLL_MS);
+          return;
+        }
+        const result = res.data;
+        const status = result.status;
+        if (TERMINAL_CALL_STATES.has(status)) {
+          stopPolling();
+          setStatus("done", "Call complete");
+          if (bubble) {
+            bubble.innerHTML =
+              status === "completed"
+                ? `Call complete. Here’s the summary:${resultCardHtml(task, result)}`
+                : `Call ended — ${escapeHtml(outcomeLabel(status).toLowerCase())}.${resultCardHtml(task, result)}`;
+          }
+          scrollBottom();
+          setTimeout(() => setStatus("idle", "Online"), 800);
+          resolve();
+          return;
+        }
+        if (bubble) {
+          bubble.innerHTML = `Calling now.${liveCardHtml(status, callId, elapsedSeconds(result))}`;
+          bindCancel(liveMsg, callId);
+        }
+        scrollBottom();
+        pollTimer = setTimeout(tick, POLL_MS);
+      };
+      tick();
+    });
+  }
+
+  async function runCall(task) {
+    setStatus("calling", "Placing the call…");
+    const idempotencyKey = `web-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+
+    const create = await api("/calls", {
+      method: "POST",
+      body: JSON.stringify({
+        task: {
+          task_id: idempotencyKey,
+          caller_identity: task.caller_identity,
+          destination_phone: task.destination_phone,
+          call_goal: task.call_goal,
+          language: task.language,
+          recipient_label: task.recipient_label || undefined,
+          consent_confirmed: true,
+          confirmed: true,
+          idempotency_key: idempotencyKey,
+        },
+      }),
+    });
+
+    if (!create.ok || !create.data || !create.data.call_id) {
+      setStatus("idle", "Online");
+      addMsg("assistant", escapeHtml(errorMessage(create.status, create.data)));
+      return;
+    }
+
+    const callId = create.data.call_id;
+    const liveMsg = addMsg(
+      "assistant",
+      `Calling now.${liveCardHtml(create.data.status || "dialing", callId, 0)}`
+    );
+    bindCancel(liveMsg, callId);
+    await pollUntilDone(task, callId, liveMsg);
   }
 
   async function respond(text) {
     busy = true;
     sendBtn.disabled = true;
-    const intent = parseIntent(text);
+    stopPolling();
+    const task = parseTask(text);
 
     addTyping();
-    await sleep(900 + Math.random() * 500);
+    await sleep(700 + Math.random() * 400);
     removeTyping();
 
-    const planMsg = addMsg("assistant", planHtml(intent));
+    if (!task.destination_phone) {
+      addMsg(
+        "assistant",
+        "Tell me the number to call in international format (E.164), e.g. <strong>+33 6 12 34 56 78</strong> — along with who to call and why."
+      );
+      busy = false;
+      resizeInput();
+      return;
+    }
 
+    const planMsg = addMsg("assistant", planHtml(task));
     const approve = planMsg.querySelector('[data-action="approve"]');
     const edit = planMsg.querySelector('[data-action="edit"]');
 
@@ -568,9 +733,9 @@
           cleanup();
           addMsg("user", "Approved. Place the call.");
           addTyping();
-          await sleep(700);
+          await sleep(500);
           removeTyping();
-          await runCall(intent);
+          await runCall(task);
           resolve();
         },
         { once: true }
@@ -582,7 +747,7 @@
           cleanup();
           addMsg(
             "assistant",
-            "Tell me what to adjust — contact, timing, tone, or objective — and I’ll rebuild the plan."
+            "Sure — resend the request with your changes (recipient, number, objective or language) and I’ll rebuild the plan."
           );
           resolve();
         },
