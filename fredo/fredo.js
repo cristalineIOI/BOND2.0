@@ -32,7 +32,7 @@
   const phSumDuration = document.getElementById("phSumDuration");
   const scenes = () => [...document.querySelectorAll(".ph-scene")];
 
-  const CALL_DURATION = 25;
+  const CALL_DURATION = 20;
   const PROMPT =
     "Book a table for four at 9 PM under Gabriel at Le Select.";
 
@@ -219,10 +219,10 @@
 
       const liveBeats = [
         { at: 2, who: "Host", text: "Le Select, bonsoir — how can I help?" },
-        { at: 6, who: "FREDO", text: "Table for four tonight at 9, under Gabriel." },
-        { at: 11, who: "Host", text: "Let me check… yes, we have table 12." },
-        { at: 16, who: "FREDO", text: "Perfect. Please hold it under Gabriel." },
-        { at: 20, who: "Host", text: "Confirmed — held 15 minutes, no deposit." },
+        { at: 5, who: "FREDO", text: "Table for four tonight at 9, under Gabriel." },
+        { at: 9, who: "Host", text: "Let me check… yes, we have table 12." },
+        { at: 13, who: "FREDO", text: "Perfect. Please hold it under Gabriel." },
+        { at: 16, who: "Host", text: "Confirmed — held 15 minutes, no deposit." },
       ];
       let beatIdx = 0;
 

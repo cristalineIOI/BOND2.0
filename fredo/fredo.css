@@ -625,13 +625,18 @@ button {
 }
 
 /* —— HOME —— */
+.ph-scene[data-scene="home"] {
+  inset: -36px -12px -18px;
+  padding: 40px 14px 22px;
+}
+
 .ph-home-bg {
   position: absolute;
-  inset: -20px -16px;
+  inset: 0;
   background:
-    radial-gradient(ellipse at 30% 20%, rgba(158, 84, 47, 0.35), transparent 50%),
-    radial-gradient(ellipse at 80% 60%, rgba(82, 64, 47, 0.5), transparent 45%),
-    linear-gradient(165deg, #3a2e24 0%, #1a1410 55%, #0c0a09 100%);
+    radial-gradient(ellipse at 28% 18%, rgba(158, 84, 47, 0.4), transparent 52%),
+    radial-gradient(ellipse at 78% 58%, rgba(82, 64, 47, 0.55), transparent 48%),
+    linear-gradient(165deg, #3a2e24 0%, #1a1410 48%, #0c0a09 100%);
   z-index: 0;
 }
 
@@ -639,28 +644,39 @@ button {
   position: relative;
   z-index: 1;
   text-align: center;
-  margin-top: 28px;
-  margin-bottom: auto;
+  margin-top: 8px;
+  margin-bottom: 28px;
+  flex-shrink: 0;
 }
 
 .ph-home-date {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  color: rgba(250, 248, 246, 0.72);
+  color: rgba(250, 248, 246, 0.75);
   letter-spacing: 0.02em;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   opacity: 0;
   animation: phRise 0.7s var(--ease) 0.2s forwards;
 }
 
 .ph-home-time {
   font-family: "Season Mix", Georgia, serif;
-  font-size: 56px;
+  font-size: 64px;
   font-weight: 420;
-  letter-spacing: -0.04em;
-  line-height: 1;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
   opacity: 0;
   animation: phRise 0.8s var(--ease) 0.35s forwards;
+}
+
+.ph-home-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px 8px;
+  padding: 0 4px;
+  margin-bottom: auto;
 }
 
 .ph-dock {
@@ -669,73 +685,138 @@ button {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  padding: 12px 6px 8px;
-  margin: 0 2px 8px;
-  border-radius: 22px;
-  background: rgba(250, 248, 246, 0.1);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  padding: 14px 10px 12px;
+  margin: 18px 0 10px;
+  border-radius: 24px;
+  background: rgba(250, 248, 246, 0.14);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
   box-shadow:
-    inset 0 0 0 1px rgba(250, 248, 246, 0.12),
-    0 8px 24px rgba(0, 0, 0, 0.25);
+    inset 0 0 0 1px rgba(250, 248, 246, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 10px 28px rgba(0, 0, 0, 0.28);
 }
 
 .ph-app {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-size: 9px;
   font-weight: 500;
-  color: rgba(250, 248, 246, 0.85);
+  color: rgba(250, 248, 246, 0.88);
   opacity: 0;
   transform: translateY(16px) scale(0.85);
   position: relative;
+  letter-spacing: -0.01em;
 }
 
-.ph-scene[data-scene="home"].is-active .ph-app {
+.ph-scene[data-scene="home"].is-active .ph-home-grid .ph-app,
+.ph-scene[data-scene="home"].is-active .ph-dock .ph-app {
   animation: appIn 0.7s var(--ease) forwards;
 }
 
-.ph-scene[data-scene="home"].is-active .ph-app:nth-child(1) { animation-delay: 0.15s; }
-.ph-scene[data-scene="home"].is-active .ph-app:nth-child(2) { animation-delay: 0.25s; }
-.ph-scene[data-scene="home"].is-active .ph-app:nth-child(3) { animation-delay: 0.35s; }
-.ph-scene[data-scene="home"].is-active .ph-app:nth-child(4) { animation-delay: 0.45s; }
+.ph-scene[data-scene="home"].is-active .ph-home-grid .ph-app:nth-child(1) { animation-delay: 0.12s; }
+.ph-scene[data-scene="home"].is-active .ph-home-grid .ph-app:nth-child(2) { animation-delay: 0.2s; }
+.ph-scene[data-scene="home"].is-active .ph-home-grid .ph-app:nth-child(3) { animation-delay: 0.28s; }
+.ph-scene[data-scene="home"].is-active .ph-home-grid .ph-app:nth-child(4) { animation-delay: 0.36s; }
+.ph-scene[data-scene="home"].is-active .ph-dock .ph-app:nth-child(1) { animation-delay: 0.44s; }
+.ph-scene[data-scene="home"].is-active .ph-dock .ph-app:nth-child(2) { animation-delay: 0.5s; }
+.ph-scene[data-scene="home"].is-active .ph-dock .ph-app:nth-child(3) { animation-delay: 0.56s; }
+.ph-scene[data-scene="home"].is-active .ph-dock .ph-app:nth-child(4) { animation-delay: 0.62s; }
 
 @keyframes appIn {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .ph-app-icon {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: 12px;
   display: grid;
   place-items: center;
-  font-size: 16px;
-  font-weight: 700;
+  overflow: hidden;
   box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    0 4px 14px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(40, 30, 21, 0.08);
   transition: transform 0.35s var(--ease);
 }
 
-.ph-app-mail { background: linear-gradient(160deg, #6ba3e0, #3a6fad); color: #fff; }
-.ph-app-cal { background: linear-gradient(160deg, #faf8f6, #e8e0d6); color: #c0392b; font-size: 15px; }
-.ph-app-slack { background: linear-gradient(160deg, #5a4a3a, #281e15); color: #faf8f6; }
-.ph-app-bond {
-  background: linear-gradient(160deg, #faf8f6, #e4d9cc);
-  color: #281e15;
-  font-family: "Season Mix", Georgia, serif;
-  font-size: 20px;
-  font-weight: 420;
+/* Calendar — cream soft UI like Bond home notifications */
+.ph-app-cal {
+  background: linear-gradient(180deg, #fff 0%, #faf8f6 100%);
+  padding: 0;
+  grid-template-rows: 14px 1fr;
+  align-content: stretch;
 }
 
-.ph-app.is-target .ph-app-bond {
-  background-color: #faf8f6;
+.ph-cal-month {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 14px;
+  background: linear-gradient(180deg, #c45c3a, #9e542f);
+  color: #faf8f6;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.ph-cal-day {
+  display: grid;
+  place-items: center;
+  color: #281e15;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+/* Gmail */
+.ph-app-mail {
+  background: linear-gradient(160deg, #faf8f6, #efe8e0);
+}
+
+/* Slack — cream tile like home Slack chrome */
+.ph-app-slack {
+  background: linear-gradient(160deg, #faf8f6, #f0ebe5);
+}
+
+/* Notion */
+.ph-app-notion {
+  background: linear-gradient(160deg, #faf8f6, #ebe4db);
+}
+
+/* Phone / Messages / Safari dock icons */
+.ph-app-phone {
+  background: linear-gradient(160deg, #3dd68c, #2f6b4f);
+}
+
+.ph-app-safari {
+  background: linear-gradient(160deg, #f5f7fa, #dbe4f0);
+}
+
+.ph-app-messages {
+  background: linear-gradient(160deg, #5ad46a, #34c759);
+}
+
+/* Bond — cream product chrome + logo mask */
+.ph-app-bond {
+  background: linear-gradient(160deg, #faf8f6 0%, #f0ebe5 55%, #e4d9cc 100%);
   box-shadow:
-    0 0 0 0 rgba(250, 248, 246, 0.5),
-    0 4px 12px rgba(0, 0, 0, 0.25);
+    0 4px 14px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -2px 4px rgba(40, 30, 21, 0.06);
+}
+
+.ph-bond-mark {
+  width: 28px;
+  height: 14px;
+  background: #281e15;
+  -webkit-mask: url("/assets/logo-bond-2-mask.png") no-repeat center / contain;
+  mask: url("/assets/logo-bond-2-mask.png") no-repeat center / contain;
 }
 
 .ph-app.is-target.is-pulse .ph-app-icon {
@@ -747,8 +828,8 @@ button {
 }
 
 @keyframes targetPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 248, 246, 0.45); }
-  50% { transform: scale(1.06); box-shadow: 0 0 0 10px rgba(250, 248, 246, 0); }
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 248, 246, 0.45), 0 4px 14px rgba(0, 0, 0, 0.28); }
+  50% { transform: scale(1.06); box-shadow: 0 0 0 10px rgba(250, 248, 246, 0), 0 4px 14px rgba(0, 0, 0, 0.28); }
 }
 
 @keyframes appTap {
@@ -759,7 +840,7 @@ button {
 
 .ph-tap {
   position: absolute;
-  top: 10px;
+  top: 12px;
   left: 50%;
   width: 18px;
   height: 18px;
@@ -788,12 +869,13 @@ button {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(250, 248, 246, 0.45);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   opacity: 0;
+  flex-shrink: 0;
 }
 
 .ph-scene[data-scene="home"].is-active .ph-home-hint {
-  animation: phRise 0.6s var(--ease) 0.7s forwards;
+  animation: phRise 0.6s var(--ease) 0.75s forwards;
 }
 
 @keyframes phRise {
