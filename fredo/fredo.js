@@ -508,17 +508,22 @@
   }
 
   async function api(path, options) {
-    const res = await fetch(API_BASE + path, {
-      headers: { "Content-Type": "application/json" },
-      ...options,
-    });
-    let data = null;
     try {
-      data = await res.json();
+      const res = await fetch(API_BASE + path, {
+        headers: { "Content-Type": "application/json" },
+        ...options,
+      });
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (_) {
+        data = null;
+      }
+      return { ok: res.ok, status: res.status, data };
     } catch (_) {
-      data = null;
+      // Network hiccup / cold start: never throw, so the poll loop survives.
+      return { ok: false, status: 0, data: null };
     }
-    return { ok: res.ok, status: res.status, data };
   }
 
   function errorMessage(status, data) {
@@ -626,28 +631,60 @@
   function pollUntilDone(task, callId, liveMsg) {
     return new Promise((resolve) => {
       const bubble = liveMsg.querySelector(".msg-bubble");
+      let attempts = 0;
+      const MAX_ATTEMPTS = 200; // ~6 min at POLL_MS
+      let lastStatus = null;
+
+      const finish = (html) => {
+        stopPolling();
+        setStatus("done", "Call complete");
+        if (bubble && html) bubble.innerHTML = html;
+        scrollBottom();
+        setTimeout(() => setStatus("idle", "Online"), 800);
+        resolve();
+      };
+
       const tick = async () => {
-        const res = await api(`/calls/${encodeURIComponent(callId)}`, { method: "GET" });
-        if (!res.ok || !res.data) {
-          pollTimer = setTimeout(tick, POLL_MS);
-          return;
+        attempts += 1;
+        let result = null;
+        try {
+          const res = await api(`/calls/${encodeURIComponent(callId)}`, { method: "GET" });
+          if (res.ok && res.data) result = res.data;
+        } catch (_) {
+          result = null;
         }
-        const result = res.data;
-        const status = result.status;
-        if (TERMINAL_CALL_STATES.has(status)) {
-          stopPolling();
-          setStatus("done", "Call complete");
-          if (bubble) {
-            bubble.innerHTML =
-              status === "completed"
-                ? `Call complete. Here’s the summary:${resultCardHtml(task, result)}`
-                : `Call ended — ${escapeHtml(outcomeLabel(status).toLowerCase())}.${resultCardHtml(task, result)}`;
+
+        // Transient failure (cold start / network): keep polling, don't die.
+        if (!result || !result.status) {
+          if (attempts >= MAX_ATTEMPTS) {
+            finish(
+              "I lost the connection to the call service. The call may still have completed — check your phone, or try again."
+            );
+          } else {
+            pollTimer = setTimeout(tick, POLL_MS);
           }
-          scrollBottom();
-          setTimeout(() => setStatus("idle", "Online"), 800);
-          resolve();
           return;
         }
+
+        const status = result.status;
+        lastStatus = status;
+
+        if (TERMINAL_CALL_STATES.has(status)) {
+          finish(
+            status === "completed"
+              ? `Call complete. Here’s the summary:${resultCardHtml(task, result)}`
+              : `Call ended — ${escapeHtml(outcomeLabel(status).toLowerCase())}.${resultCardHtml(task, result)}`
+          );
+          return;
+        }
+
+        if (attempts >= MAX_ATTEMPTS) {
+          finish(
+            `The call is taking longer than expected (last status: ${escapeHtml(String(lastStatus))}). It may still be active — check your phone.`
+          );
+          return;
+        }
+
         if (bubble) {
           bubble.innerHTML = `Calling now.${liveCardHtml(status, callId, elapsedSeconds(result))}`;
           bindCancel(liveMsg, callId);
@@ -655,6 +692,7 @@
         scrollBottom();
         pollTimer = setTimeout(tick, POLL_MS);
       };
+
       tick();
     });
   }
