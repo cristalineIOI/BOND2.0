@@ -101,6 +101,10 @@
 
   function typeInto(el, text, speed = 28) {
     return new Promise((resolve) => {
+      if (!el) {
+        resolve();
+        return;
+      }
       el.textContent = "";
       el.classList.add("is-typing");
       let i = 0;
@@ -119,6 +123,7 @@
   }
 
   function addBubble(role, html) {
+    if (!phChatStream) return null;
     const b = document.createElement("div");
     b.className = `ph-bubble ${role}`;
     b.innerHTML = html;
@@ -128,6 +133,7 @@
   }
 
   function addLiveLine(who, text) {
+    if (!phLiveFeed) return;
     const line = document.createElement("div");
     line.className = "ph-live-line";
     line.innerHTML = `<b>${who}</b>${text}`;
@@ -141,117 +147,118 @@
     clearDemo();
     if (!phone) return;
 
-    // reset
-    callSeconds = 0;
-    if (phoneTimer) phoneTimer.textContent = "00:00";
-    if (phChatStream) phChatStream.innerHTML = "";
-    if (phLiveFeed) phLiveFeed.innerHTML = "";
-    if (phChatInput) phChatInput.textContent = "";
-    if (phCompose?.querySelector(".ph-chat-send")) {
-      phCompose.querySelector(".ph-chat-send").classList.remove("is-ready");
+    try {
+      callSeconds = 0;
+      if (phoneTimer) phoneTimer.textContent = "00:00";
+      if (phChatStream) phChatStream.innerHTML = "";
+      if (phLiveFeed) phLiveFeed.innerHTML = "";
+      if (phChatInput) phChatInput.textContent = "";
+      phCompose?.querySelector(".ph-chat-send")?.classList.remove("is-ready");
+      bondApp?.classList.remove("is-pulse", "is-tap");
+      islandPill?.classList.remove("is-live");
+      setTheme("dark");
+      showScene("home");
+
+      // 1 · Entrance
+      phone.classList.remove("is-float", "is-in");
+      void phone.offsetWidth;
+      await new Promise((r) => requestAnimationFrame(() => {
+        phone.classList.add("is-in");
+        r();
+      }));
+      await wait(1750);
+      phone.classList.add("is-float");
+
+      // 2 · App selection
+      bondApp?.classList.add("is-pulse");
+      await wait(1100);
+      bondApp?.classList.remove("is-pulse");
+      bondApp?.classList.add("is-tap");
+      await wait(500);
+
+      // 3 · Chat
+      setTheme("light");
+      showScene("chat");
+      await wait(450);
+
+      await typeInto(phChatInput, PROMPT, 22);
+      phCompose?.querySelector(".ph-chat-send")?.classList.add("is-ready");
+      await wait(350);
+
+      if (phChatInput) phChatInput.textContent = "";
+      phCompose?.querySelector(".ph-chat-send")?.classList.remove("is-ready");
+      addBubble("user", PROMPT);
+      await wait(700);
+
+      addBubble(
+        "bot",
+        `Got it. Here's the call plan:
+        <div class="ph-plan"><b>Plan</b>Le Select · 4 guests · 9:00 PM · Gabriel</div>
+        <span class="ph-approve">Approve &amp; call</span>`
+      );
+      await wait(1600);
+
+      const approve = phChatStream?.querySelector(".ph-approve");
+      if (approve) {
+        approve.style.transform = "scale(0.94)";
+        await wait(180);
+        approve.style.transform = "";
+      }
+      await wait(280);
+
+      // 4 · Dialing
+      setTheme("dark");
+      showScene("dial");
+      await wait(2200);
+
+      // 5 · Live call — 25s
+      setTheme("light");
+      showScene("call");
+      islandPill?.classList.add("is-live");
+      if (phoneTimerLabel) phoneTimerLabel.textContent = "Live · listen only";
+
+      const liveBeats = [
+        { at: 2, who: "Host", text: "Le Select, bonsoir — how can I help?" },
+        { at: 6, who: "FREDO", text: "Table for four tonight at 9, under Gabriel." },
+        { at: 11, who: "Host", text: "Let me check… yes, we have table 12." },
+        { at: 16, who: "FREDO", text: "Perfect. Please hold it under Gabriel." },
+        { at: 20, who: "Host", text: "Confirmed — held 15 minutes, no deposit." },
+      ];
+      let beatIdx = 0;
+
+      callSeconds = 0;
+      if (phoneTimer) phoneTimer.textContent = formatCall(0);
+
+      await new Promise((resolve) => {
+        callInterval = setInterval(() => {
+          callSeconds += 1;
+          if (phoneTimer) phoneTimer.textContent = formatCall(callSeconds);
+
+          while (beatIdx < liveBeats.length && liveBeats[beatIdx].at <= callSeconds) {
+            const b = liveBeats[beatIdx++];
+            addLiveLine(b.who, b.text);
+          }
+
+          if (callSeconds >= CALL_DURATION) {
+            clearInterval(callInterval);
+            callInterval = null;
+            resolve();
+          }
+        }, 1000);
+      });
+
+      // 6 · Summary
+      islandPill?.classList.remove("is-live");
+      if (phSumDuration) phSumDuration.textContent = formatCall(CALL_DURATION);
+      setTheme("light");
+      showScene("summary");
+
+      await wait(7500);
+    } catch (err) {
+      console.error("FREDO phone demo error:", err);
+      await wait(2000);
     }
-    bondApp?.classList.remove("is-pulse", "is-tap");
-    islandPill?.classList.remove("is-live");
-    setTheme("dark");
-    showScene("home");
 
-    // 1 · Cinematic entrance
-    phone.classList.remove("is-float");
-    phone.classList.remove("is-in");
-    void phone.offsetWidth;
-    requestAnimationFrame(() => phone.classList.add("is-in"));
-    await wait(1700);
-    phone.classList.add("is-float");
-
-    // 2 · App selection — pulse Bond, then tap
-    bondApp?.classList.add("is-pulse");
-    await wait(1100);
-    bondApp?.classList.remove("is-pulse");
-    bondApp?.classList.add("is-tap");
-    await wait(480);
-
-    // 3 · Open chat
-    setTheme("light");
-    showScene("chat");
-    await wait(500);
-
-    // Type prompt in composer
-    await typeInto(phChatInput, PROMPT, 22);
-    phCompose?.querySelector(".ph-chat-send")?.classList.add("is-ready");
-    await wait(350);
-
-    // Send → user bubble
-    phChatInput.textContent = "";
-    phCompose?.querySelector(".ph-chat-send")?.classList.remove("is-ready");
-    addBubble("user", PROMPT);
-    await wait(700);
-
-    addBubble(
-      "bot",
-      `Got it. Here’s the call plan:
-      <div class="ph-plan"><b>Plan</b>Le Select · 4 guests · 9:00 PM · Gabriel</div>
-      <span class="ph-approve">Approve &amp; call</span>`
-    );
-    await wait(1600);
-
-    // Simulate approve tap
-    const approve = phChatStream.querySelector(".ph-approve");
-    if (approve) {
-      approve.style.transform = "scale(0.94)";
-      await wait(180);
-      approve.style.transform = "";
-    }
-    await wait(280);
-
-    // 4 · Dialing
-    setTheme("dark");
-    showScene("dial");
-    await wait(2200);
-
-    // 5 · Live call — 25 seconds
-    setTheme("light");
-    showScene("call");
-    islandPill?.classList.add("is-live");
-    if (phoneTimerLabel) phoneTimerLabel.textContent = "Live · listen only";
-
-    const liveBeats = [
-      { at: 2, who: "Host", text: "Le Select, bonsoir — how can I help?" },
-      { at: 6, who: "FREDO", text: "Table for four tonight at 9, under Gabriel." },
-      { at: 11, who: "Host", text: "Let me check… yes, we have table 12." },
-      { at: 16, who: "FREDO", text: "Perfect. Please hold it under Gabriel." },
-      { at: 20, who: "Host", text: "Confirmed — held 15 minutes, no deposit." },
-    ];
-    let beatIdx = 0;
-
-    callSeconds = 0;
-    if (phoneTimer) phoneTimer.textContent = formatCall(0);
-
-    await new Promise((resolve) => {
-      callInterval = setInterval(() => {
-        callSeconds += 1;
-        if (phoneTimer) phoneTimer.textContent = formatCall(callSeconds);
-
-        while (beatIdx < liveBeats.length && liveBeats[beatIdx].at <= callSeconds) {
-          const b = liveBeats[beatIdx++];
-          addLiveLine(b.who, b.text);
-        }
-
-        if (callSeconds >= CALL_DURATION) {
-          clearInterval(callInterval);
-          callInterval = null;
-          resolve();
-        }
-      }, 1000);
-    });
-
-    // 6 · Summary
-    islandPill?.classList.remove("is-live");
-    if (phSumDuration) phSumDuration.textContent = formatCall(CALL_DURATION);
-    setTheme("light");
-    showScene("summary");
-
-    // Hold, then loop
-    await wait(7500);
     runPhoneDemo();
   }
 
@@ -261,7 +268,7 @@
 
   // —— Nav solid on scroll ——
   const onScroll = () => {
-    nav.classList.toggle("is-solid", window.scrollY > 40);
+    nav?.classList.toggle("is-solid", window.scrollY > 40);
   };
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });

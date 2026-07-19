@@ -417,13 +417,17 @@ button {
   opacity: 0;
   filter: blur(12px);
   transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
 }
 
 .phone.is-in {
-  animation: phoneCinema 1.65s var(--ease) 0.15s forwards;
+  opacity: 1;
+  filter: none;
+  transform: translateY(0) scale(1) rotateX(0) rotateY(0);
+  animation: phoneCinema 1.65s var(--ease) both;
 }
 
-.phone.is-float {
+.phone.is-in.is-float .phone-bezel {
   animation: phoneFloat 6s ease-in-out infinite;
 }
 
@@ -439,6 +443,8 @@ button {
     transform: translateY(-10px) scale(1.03) rotateX(-2deg) rotateY(2deg);
   }
   70% {
+    opacity: 1;
+    filter: blur(0);
     transform: translateY(4px) scale(0.99) rotateX(1deg) rotateY(-1deg);
   }
   100% {
