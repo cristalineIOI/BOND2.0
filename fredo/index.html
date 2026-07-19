@@ -125,20 +125,11 @@
                 <div class="ph-scene" data-scene="home">
                   <div class="ph-home-bg" aria-hidden="true"></div>
                   <div class="ph-home-main">
-                    <div class="ph-ios-grid">
-                      <div class="ph-widget ph-widget-clock">
-                        <div class="ph-clock-box">
-                          <img src="/assets/icons/home/clock-widget.png" alt="" draggable="false">
-                          <div class="ph-clock-hands" aria-hidden="true">
-                            <div class="ph-hand ph-hand-hour" id="phHour"></div>
-                            <div class="ph-hand ph-hand-min" id="phMin"></div>
-                            <div class="ph-hand ph-hand-sec" id="phSec"></div>
-                            <div class="ph-hand-cap"></div>
-                          </div>
-                        </div>
-                        <span>Clock</span>
-                      </div>
-
+                    <div class="ph-home-clock">
+                      <div class="ph-home-date">Sunday, July 19</div>
+                      <div class="ph-home-time" id="homeBigClock">9:41</div>
+                    </div>
+                    <div class="ph-home-apps" id="phHomeApps">
                       <div class="ph-app" data-app="photos">
                         <span class="ph-app-icon"><img src="/assets/icons/home/photos.png" alt="" draggable="false"></span>
                         <span>Photos</span>
@@ -147,47 +138,15 @@
                         <span class="ph-app-icon"><img src="/assets/icons/home/calendar.png" alt="" draggable="false"></span>
                         <span>Calendar</span>
                       </div>
-                      <div class="ph-app" data-app="settings">
-                        <span class="ph-app-icon"><img src="/assets/icons/home/settings.png" alt="" draggable="false"></span>
-                        <span>Settings</span>
+                      <div class="ph-app" data-app="notion">
+                        <span class="ph-app-icon"><img src="/assets/icons/home/notion.png" alt="" draggable="false"></span>
+                        <span>Notion</span>
                       </div>
-                      <div class="ph-app" data-app="appstore">
-                        <span class="ph-app-icon"><img src="/assets/icons/home/appstore.png" alt="" draggable="false"></span>
-                        <span>App Store</span>
-                      </div>
-
-                      <div class="ph-app" data-app="health">
-                        <span class="ph-app-icon"><img src="/assets/icons/home/health.png" alt="" draggable="false"></span>
-                        <span>Health</span>
-                      </div>
-                      <div class="ph-app" data-app="notes">
-                        <span class="ph-app-icon"><img src="/assets/icons/home/notes.png" alt="" draggable="false"></span>
-                        <span>Notes</span>
-                      </div>
-
-                      <div class="ph-widget ph-widget-weather">
-                        <div class="ph-weather-box">
-                          <div class="ph-weather-city">Amsterdam</div>
-                          <div class="ph-weather-temp">19°</div>
-                          <div class="ph-weather-cond">
-                            <img src="/assets/icons/home/weather-sun.png" alt="" width="14" height="14" draggable="false">
-                            <span>Sunny</span>
-                          </div>
-                          <div class="ph-weather-hl">↑ 20° ↓ 15°</div>
-                        </div>
-                        <span>Weather</span>
-                      </div>
-
-                      <div class="ph-app" data-app="maps">
-                        <span class="ph-app-icon"><img src="/assets/icons/home/maps.png" alt="" draggable="false"></span>
-                        <span>Maps</span>
-                      </div>
-                      <div class="ph-app" data-app="gmail">
-                        <span class="ph-app-icon"><img src="/assets/icons/home/gmail.png" alt="" draggable="false"></span>
-                        <span>Gmail</span>
+                      <div class="ph-app" data-app="chatgpt">
+                        <span class="ph-app-icon"><img src="/assets/icons/home/chatgpt.png" alt="" draggable="false"></span>
+                        <span>ChatGPT</span>
                       </div>
                     </div>
-
                     <div class="ph-dock" id="phDock">
                       <div class="ph-app" data-app="phone">
                         <span class="ph-app-icon">
