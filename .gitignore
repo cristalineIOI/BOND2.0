@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+_pages-report.json
+*.mjs.bak
+.cursor/

@@ -1,0 +1,9 @@
+{
+  "name": "bond-clone",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "mirror": "node fetch-pages.mjs && node patch-nav.mjs"
+  }
+}

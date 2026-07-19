@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FREDO — Agent vocal | BOND 2.0</title>
+  <meta name="description" content="FREDO est l’agent vocal de BOND 2.0. Déléguez un appel téléphonique en expliquant qui appeler, pourquoi, et avec quelles contraintes.">
+  <link rel="icon" href="https://framerusercontent.com/images/FcrIXzrRYpAhh1hF1bPqjca57E.png">
+  <link rel="stylesheet" href="fredo.css">
+</head>
+<body>
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="logo" href="/" aria-label="BOND 2.0"></a>
+      <nav class="nav-links" aria-label="Principal">
+        <a href="/#features">Features</a>
+        <a href="/about/">About</a>
+        <a href="/pricing/">Pricing</a>
+        <a href="/#security">Security</a>
+        <a href="/fredo/" class="is-active"><span class="fredo-mark" aria-label="Fredo">Fred<span class="pill-o" aria-hidden="true"></span></span></a>
+      </nav>
+      <a class="nav-cta" href="#chat">Essayer <span class="fredo-mark" aria-label="FREDO">FRED<span class="pill-o" aria-hidden="true"></span></span></a>
+      <button class="nav-burger" type="button" aria-label="Menu" id="burger">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </header>
+  <div class="nav-mobile" id="navMobile">
+    <a href="/#features">Features</a>
+    <a href="/about/">About</a>
+    <a href="/pricing/">Pricing</a>
+    <a href="/#security">Security</a>
+    <a href="/fredo/" class="is-active"><span class="fredo-mark" aria-label="Fredo">Fred<span class="pill-o" aria-hidden="true"></span></span></a>
+    <a href="#chat">Essayer <span class="fredo-mark" aria-label="FREDO">FRED<span class="pill-o" aria-hidden="true"></span></span></a>
+  </div>
+
+  <section class="hero">
+    <div class="hero-grain" aria-hidden="true"></div>
+    <div class="hero-orb" aria-hidden="true"></div>
+    <div class="hero-content">
+      <div>
+        <div class="hero-kicker">
+          <span class="hero-kicker-dot"></span>
+          Agent vocal · BOND 2.0
+        </div>
+        <div class="hero-brand" aria-label="FREDO">FRED<span class="pill-o" aria-hidden="true"></span></div>
+        <h1>L’appel que vous n’aurez pas à passer.</h1>
+        <p class="hero-lead">
+          Expliquez qui appeler, pourquoi, et avec quelles contraintes.
+          <span class="fredo-mark" aria-label="FREDO">FRED<span class="pill-o" aria-hidden="true"></span></span> prépare le plan, valide avec vous, passe l’appel —
+          et revient avec un résultat clair.
+        </p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#chat">
+            Ouvrir le chat
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+          <a class="btn-ghost" href="#how">Comment ça marche</a>
+        </div>
+      </div>
+      <aside class="hero-aside">
+        <div class="phone" id="heroPhone" aria-label="Appel FREDO en cours">
+          <div class="phone-bezel">
+            <div class="phone-screen">
+              <div class="phone-status-bar">
+                <span class="phone-time" id="phoneClock">12:01</span>
+                <span class="phone-island" aria-hidden="true"></span>
+                <span class="phone-sys" aria-hidden="true">
+                  <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="3" width="2" height="7" rx="0.5"/><rect x="3.5" y="2" width="2" height="8" rx="0.5"/><rect x="7" y="0.5" width="2" height="9.5" rx="0.5"/><rect x="10.5" y="0" width="2" height="10" rx="0.5" opacity="0.35"/></svg>
+                  <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><path d="M1 3.2C2.4 1.9 4.1 1.2 6 1.2s3.6.7 5 2l-.9.9C8.9 3 7.5 2.5 6 2.5S3.1 3 2 4.1L1 3.2zm2.1 2.1c.8-.8 1.8-1.2 2.9-1.2s2.1.4 2.9 1.2l-.9.9A2.7 2.7 0 0 0 6 5.2c-.7 0-1.4.3-1.9.8l-.9-.9zm2.1 2.1c.3-.3.7-.5 1.1-.5s.8.2 1.1.5L7.3 8.5 6.3 7.4z"/></svg>
+                  <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><rect x="0.5" y="0.5" width="18" height="9" rx="2" stroke="currentColor"/><rect x="2" y="2" width="13" height="6" rx="1" fill="currentColor"/><path d="M19.5 3v4a1.5 1.5 0 0 0 0-4z" fill="currentColor"/></svg>
+                </span>
+              </div>
+
+              <div class="phone-call-state">
+                <span class="phone-live-dot"></span>
+                <span>EN COURS</span>
+              </div>
+
+              <div class="phone-avatar" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4A90D9" stroke-width="1.6" stroke-linecap="round"><path d="M8 4h2.5l.8 2.2L9 8.5v2l2.2 1.2L13 9.5l2.2 2.2L13 14l1.8 2.2H18M8 20c2-2 4-3 6-3s4 1 6 3"/></svg>
+              </div>
+
+              <div class="phone-with">Appel avec</div>
+              <div class="phone-contact">Restaurant Le Select</div>
+              <div class="phone-number">+32 •••• ••42</div>
+
+              <div class="phone-timer" id="phoneTimer">00:00</div>
+              <div class="phone-timer-label" id="phoneTimerLabel">Connexion...</div>
+
+              <div class="phone-divider"></div>
+              <p class="phone-brief">Réserver une table pour quatre à 21 h sous le nom de Gabriel.</p>
+
+              <div class="phone-wave" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+
+              <div class="phone-privacy">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+                Écoute seule · non enregistré
+              </div>
+              <div class="phone-home" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="strip" id="how">
+    <div class="strip-inner">
+      <div class="strip-item">
+        <div class="strip-num">01</div>
+        <div>
+          <h3>Vous déléguez en langage naturel</h3>
+          <p>Qui appeler, pourquoi, et les contraintes à respecter — directement dans le chat.</p>
+        </div>
+      </div>
+      <div class="strip-item">
+        <div class="strip-num">02</div>
+        <div>
+          <h3><span class="fredo-mark" aria-label="FREDO">FRED<span class="pill-o" aria-hidden="true"></span></span> structure et vérifie</h3>
+          <p>Plan d’appel, points critiques, validation si nécessaire — avant de décrocher.</p>
+        </div>
+      </div>
+      <div class="strip-item">
+        <div class="strip-num">03</div>
+        <div>
+          <h3>Vous récupérez le résultat</h3>
+          <p>Demandé, obtenu, décisions, prochaines étapes. Clair. Actionnable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="product" id="chat">
+    <div class="product-head">
+      <div class="eyebrow">Produit</div>
+      <h2>Le chat. Puis le téléphone.</h2>
+      <p>Une conversation suffit. <span class="fredo-mark" aria-label="FREDO">FRED<span class="pill-o" aria-hidden="true"></span></span> transforme votre intention en appel réel — puis en décision.</p>
+    </div>
+
+    <div class="chat-shell" id="chatShell">
+      <div class="chat-top">
+        <div class="chat-identity">
+          <div class="chat-avatar">F</div>
+          <div>
+            <h3><span class="fredo-mark" aria-label="FREDO">FRED<span class="pill-o" aria-hidden="true"></span></span></h3>
+            <p>Agent vocal · connecté à votre ligne</p>
+          </div>
+        </div>
+        <div class="chat-status" id="chatStatus" data-state="idle">
+          <span class="chat-status-dot"></span>
+          <span id="chatStatusText">En ligne</span>
+        </div>
+      </div>
+
+      <div class="chat-body">
+        <div class="chat-stream" id="chatStream" aria-live="polite"></div>
+
+        <div class="chat-hints" id="chatHints">
+          <button type="button" data-prompt="Appelle le cabinet Martin demain avant 11h pour confirmer le rendez-vous du board. Si indisponible, propose jeudi.">Confirmer un rendez-vous</button>
+          <button type="button" data-prompt="Relance Acme Corp au sujet du contrat Q3. Objectif : obtenir une date de signature cette semaine. Reste courtois, pas de pression.">Relancer un contrat</button>
+          <button type="button" data-prompt="Appelle ma banque, service entreprises, pour vérifier le statut du virement SEPA de 42 000 € vers Horizon SAS. Note le numéro de référence.">Suivre un virement</button>
+        </div>
+
+        <form class="chat-composer" id="chatForm">
+          <textarea
+            id="chatInput"
+            rows="1"
+            placeholder="Qui appeler, pourquoi, quelles contraintes…"
+            autocomplete="off"
+          ></textarea>
+          <button class="chat-send" type="submit" id="chatSend" aria-label="Envoyer" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing">
+    <div class="closing-inner">
+      <h2>BOND pense. <span class="fredo-mark" aria-label="FREDO">FRED<span class="pill-o" aria-hidden="true"></span></span> parle.</h2>
+      <p>Quand l’écran ne suffit plus, votre chief of staff décroche le téléphone.</p>
+      <a class="btn-primary" href="#chat" id="restartDemo">Relancer une démo</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>© BOND 2.0 · <span class="fredo-mark" aria-label="FREDO">FRED<span class="pill-o" aria-hidden="true"></span></span></span>
+      <a href="/">Retour à l’accueil</a>
+    </div>
+  </footer>
+
+  <script src="fredo.js"></script>
+</body>
+</html>
