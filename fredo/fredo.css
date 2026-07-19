@@ -802,7 +802,7 @@ button {
   background: linear-gradient(160deg, #5ad46a, #34c759);
 }
 
-/* Bond — cream product chrome + logo mask */
+/* Bond — cream product chrome + wordmark */
 .ph-app-bond {
   background: linear-gradient(160deg, #faf8f6 0%, #f0ebe5 55%, #e4d9cc 100%);
   box-shadow:
@@ -811,12 +811,10 @@ button {
     inset 0 -2px 4px rgba(40, 30, 21, 0.06);
 }
 
-.ph-bond-mark {
-  width: 28px;
-  height: 14px;
-  background: #281e15;
-  -webkit-mask: url("/assets/logo-bond-2-mask.png") no-repeat center / contain;
-  mask: url("/assets/logo-bond-2-mask.png") no-repeat center / contain;
+.ph-bond-svg {
+  width: 34px;
+  height: 15px;
+  display: block;
 }
 
 .ph-app.is-target.is-pulse .ph-app-icon {
