@@ -23,7 +23,6 @@
   const phoneTimerLabel = document.getElementById("phoneTimerLabel");
   const phoneClock = document.getElementById("phoneClock");
   const homeBigClock = document.getElementById("homeBigClock");
-  const lockBigClock = document.getElementById("lockBigClock");
   const islandPill = document.getElementById("islandPill");
   const bondApp = document.getElementById("bondApp");
   const phChatStream = document.getElementById("phChatStream");
@@ -31,7 +30,6 @@
   const phCompose = document.getElementById("phCompose");
   const phLiveFeed = document.getElementById("phLiveFeed");
   const phSumDuration = document.getElementById("phSumDuration");
-  const phLockUi = document.getElementById("phLockUi");
   const scenes = () => [...document.querySelectorAll(".ph-scene")];
 
   const CALL_DURATION = 20;
@@ -119,7 +117,6 @@
       hour12: false,
     });
     if (homeBigClock) homeBigClock.textContent = big;
-    if (lockBigClock) lockBigClock.textContent = big;
   }
 
   function typeInto(el, text, speed = 28) {
