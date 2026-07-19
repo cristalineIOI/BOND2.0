@@ -1642,6 +1642,7 @@ button {
   background:
     radial-gradient(ellipse 70% 50% at 50% 0%, rgba(82, 64, 47, 0.06), transparent 60%),
     var(--cream);
+  scroll-margin-top: calc(var(--nav-h) + 12px);
 }
 
 .product-head {

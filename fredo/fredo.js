@@ -619,17 +619,76 @@
   welcome();
   resizeInput();
 
+  // —— Smooth scroll to chat ——
+  const chatSection = document.getElementById("chat");
+  const navMobile = document.getElementById("navMobile");
+  let chatScrollRaf = 0;
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function scrollToChat({ focus = true } = {}) {
+    if (!chatSection) return;
+
+    navMobile?.classList.remove("is-open");
+    shell?.classList.add("is-in");
+
+    const navH =
+      parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 72;
+    const targetY = Math.max(
+      0,
+      chatSection.getBoundingClientRect().top + window.scrollY - navH - 12
+    );
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    if (Math.abs(distance) < 2) {
+      if (focus) input?.focus({ preventScroll: true });
+      return;
+    }
+
+    const duration = Math.min(1200, Math.max(700, Math.abs(distance) * 0.55));
+    const start = performance.now();
+    cancelAnimationFrame(chatScrollRaf);
+
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      window.scrollTo(0, startY + distance * easeOutCubic(t));
+      if (t < 1) {
+        chatScrollRaf = requestAnimationFrame(tick);
+      } else if (focus) {
+        input?.focus({ preventScroll: true });
+      }
+    };
+    chatScrollRaf = requestAnimationFrame(tick);
+
+    if (history.replaceState) {
+      history.replaceState(null, "", "#chat");
+    }
+  }
+
+  document.querySelectorAll('a[href="#chat"]').forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      scrollToChat({ focus: link.id !== "restartDemo" });
+    });
+  });
+
+  if (location.hash === "#chat") {
+    requestAnimationFrame(() => scrollToChat({ focus: true }));
+  }
+
   document.getElementById("restartDemo")?.addEventListener("click", () => {
     welcome();
   });
 
   document.getElementById("burger")?.addEventListener("click", () => {
-    document.getElementById("navMobile").classList.toggle("is-open");
+    navMobile?.classList.toggle("is-open");
   });
 
-  document.getElementById("navMobile")?.querySelectorAll("a").forEach((a) => {
+  navMobile?.querySelectorAll("a").forEach((a) => {
     a.addEventListener("click", () => {
-      document.getElementById("navMobile").classList.remove("is-open");
+      navMobile.classList.remove("is-open");
     });
   });
 })();
