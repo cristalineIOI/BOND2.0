@@ -16,11 +16,30 @@
 
   let busy = false;
 
-  // —— Hero phone: appear + live call timer ——
+  // —— Hero phone: cinematic multi-scene demo ——
   const phone = document.getElementById("heroPhone");
+  const phoneScreen = document.getElementById("phoneScreen");
   const phoneTimer = document.getElementById("phoneTimer");
   const phoneTimerLabel = document.getElementById("phoneTimerLabel");
   const phoneClock = document.getElementById("phoneClock");
+  const homeBigClock = document.getElementById("homeBigClock");
+  const islandPill = document.getElementById("islandPill");
+  const bondApp = document.getElementById("bondApp");
+  const phChatStream = document.getElementById("phChatStream");
+  const phChatInput = document.getElementById("phChatInput");
+  const phCompose = document.getElementById("phCompose");
+  const phLiveFeed = document.getElementById("phLiveFeed");
+  const phSumDuration = document.getElementById("phSumDuration");
+  const scenes = () => [...document.querySelectorAll(".ph-scene")];
+
+  const CALL_DURATION = 25;
+  const PROMPT =
+    "Book a table for four at 9 PM under Gabriel at Le Select.";
+
+  let demoTimers = [];
+  let callInterval = null;
+  let clockInterval = null;
+  let callSeconds = 0;
 
   function formatClock(d) {
     return d.toLocaleTimeString("en-US", {
@@ -36,26 +55,209 @@
     return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
   }
 
-  if (phoneClock) phoneClock.textContent = formatClock(new Date());
+  function wait(ms) {
+    return new Promise((resolve) => {
+      const id = setTimeout(resolve, ms);
+      demoTimers.push(id);
+    });
+  }
 
-  requestAnimationFrame(() => {
-    phone?.classList.add("is-in");
-  });
+  function clearDemo() {
+    demoTimers.forEach(clearTimeout);
+    demoTimers = [];
+    if (callInterval) {
+      clearInterval(callInterval);
+      callInterval = null;
+    }
+  }
 
-  let callSeconds = 0;
-  let callStarted = false;
+  function setTheme(theme) {
+    if (phoneScreen) phoneScreen.dataset.theme = theme;
+  }
 
-  setTimeout(() => {
-    callStarted = true;
-    if (phoneTimerLabel) phoneTimerLabel.textContent = "Call in progress";
-  }, 900);
+  function showScene(name) {
+    scenes().forEach((el) => {
+      el.classList.remove("is-active", "is-exit");
+    });
+    const next = document.querySelector(`.ph-scene[data-scene="${name}"]`);
+    if (next) {
+      void next.offsetWidth;
+      next.classList.add("is-active");
+    }
+  }
 
-  setInterval(() => {
-    if (phoneClock) phoneClock.textContent = formatClock(new Date());
-    if (!callStarted || !phoneTimer) return;
-    callSeconds += 1;
-    phoneTimer.textContent = formatCall(callSeconds);
-  }, 1000);
+  function updateClocks() {
+    const now = formatClock(new Date());
+    if (phoneClock) phoneClock.textContent = now;
+    if (homeBigClock) {
+      const d = new Date();
+      homeBigClock.textContent = d.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: false,
+      });
+    }
+  }
+
+  function typeInto(el, text, speed = 28) {
+    return new Promise((resolve) => {
+      el.textContent = "";
+      el.classList.add("is-typing");
+      let i = 0;
+      const tick = () => {
+        if (i < text.length) {
+          el.textContent += text[i++];
+          const id = setTimeout(tick, speed + Math.random() * 18);
+          demoTimers.push(id);
+        } else {
+          el.classList.remove("is-typing");
+          resolve();
+        }
+      };
+      tick();
+    });
+  }
+
+  function addBubble(role, html) {
+    const b = document.createElement("div");
+    b.className = `ph-bubble ${role}`;
+    b.innerHTML = html;
+    phChatStream.appendChild(b);
+    phChatStream.scrollTop = phChatStream.scrollHeight;
+    return b;
+  }
+
+  function addLiveLine(who, text) {
+    const line = document.createElement("div");
+    line.className = "ph-live-line";
+    line.innerHTML = `<b>${who}</b>${text}`;
+    phLiveFeed.appendChild(line);
+    while (phLiveFeed.children.length > 3) {
+      phLiveFeed.firstChild.remove();
+    }
+  }
+
+  async function runPhoneDemo() {
+    clearDemo();
+    if (!phone) return;
+
+    // reset
+    callSeconds = 0;
+    if (phoneTimer) phoneTimer.textContent = "00:00";
+    if (phChatStream) phChatStream.innerHTML = "";
+    if (phLiveFeed) phLiveFeed.innerHTML = "";
+    if (phChatInput) phChatInput.textContent = "";
+    if (phCompose?.querySelector(".ph-chat-send")) {
+      phCompose.querySelector(".ph-chat-send").classList.remove("is-ready");
+    }
+    bondApp?.classList.remove("is-pulse", "is-tap");
+    islandPill?.classList.remove("is-live");
+    setTheme("dark");
+    showScene("home");
+
+    // 1 · Cinematic entrance
+    phone.classList.remove("is-float");
+    phone.classList.remove("is-in");
+    void phone.offsetWidth;
+    requestAnimationFrame(() => phone.classList.add("is-in"));
+    await wait(1700);
+    phone.classList.add("is-float");
+
+    // 2 · App selection — pulse Bond, then tap
+    bondApp?.classList.add("is-pulse");
+    await wait(1100);
+    bondApp?.classList.remove("is-pulse");
+    bondApp?.classList.add("is-tap");
+    await wait(480);
+
+    // 3 · Open chat
+    setTheme("light");
+    showScene("chat");
+    await wait(500);
+
+    // Type prompt in composer
+    await typeInto(phChatInput, PROMPT, 22);
+    phCompose?.querySelector(".ph-chat-send")?.classList.add("is-ready");
+    await wait(350);
+
+    // Send → user bubble
+    phChatInput.textContent = "";
+    phCompose?.querySelector(".ph-chat-send")?.classList.remove("is-ready");
+    addBubble("user", PROMPT);
+    await wait(700);
+
+    addBubble(
+      "bot",
+      `Got it. Here’s the call plan:
+      <div class="ph-plan"><b>Plan</b>Le Select · 4 guests · 9:00 PM · Gabriel</div>
+      <span class="ph-approve">Approve &amp; call</span>`
+    );
+    await wait(1600);
+
+    // Simulate approve tap
+    const approve = phChatStream.querySelector(".ph-approve");
+    if (approve) {
+      approve.style.transform = "scale(0.94)";
+      await wait(180);
+      approve.style.transform = "";
+    }
+    await wait(280);
+
+    // 4 · Dialing
+    setTheme("dark");
+    showScene("dial");
+    await wait(2200);
+
+    // 5 · Live call — 25 seconds
+    setTheme("light");
+    showScene("call");
+    islandPill?.classList.add("is-live");
+    if (phoneTimerLabel) phoneTimerLabel.textContent = "Live · listen only";
+
+    const liveBeats = [
+      { at: 2, who: "Host", text: "Le Select, bonsoir — how can I help?" },
+      { at: 6, who: "FREDO", text: "Table for four tonight at 9, under Gabriel." },
+      { at: 11, who: "Host", text: "Let me check… yes, we have table 12." },
+      { at: 16, who: "FREDO", text: "Perfect. Please hold it under Gabriel." },
+      { at: 20, who: "Host", text: "Confirmed — held 15 minutes, no deposit." },
+    ];
+    let beatIdx = 0;
+
+    callSeconds = 0;
+    if (phoneTimer) phoneTimer.textContent = formatCall(0);
+
+    await new Promise((resolve) => {
+      callInterval = setInterval(() => {
+        callSeconds += 1;
+        if (phoneTimer) phoneTimer.textContent = formatCall(callSeconds);
+
+        while (beatIdx < liveBeats.length && liveBeats[beatIdx].at <= callSeconds) {
+          const b = liveBeats[beatIdx++];
+          addLiveLine(b.who, b.text);
+        }
+
+        if (callSeconds >= CALL_DURATION) {
+          clearInterval(callInterval);
+          callInterval = null;
+          resolve();
+        }
+      }, 1000);
+    });
+
+    // 6 · Summary
+    islandPill?.classList.remove("is-live");
+    if (phSumDuration) phSumDuration.textContent = formatCall(CALL_DURATION);
+    setTheme("light");
+    showScene("summary");
+
+    // Hold, then loop
+    await wait(7500);
+    runPhoneDemo();
+  }
+
+  updateClocks();
+  clockInterval = setInterval(updateClocks, 1000);
+  runPhoneDemo();
 
   // —— Nav solid on scroll ——
   const onScroll = () => {

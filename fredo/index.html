@@ -59,12 +59,15 @@
         </div>
       </div>
       <aside class="hero-aside">
-        <div class="phone" id="heroPhone" aria-label="FREDO call in progress">
+        <div class="phone" id="heroPhone" aria-label="FREDO product demo">
+          <div class="phone-aura" aria-hidden="true"></div>
           <div class="phone-bezel">
-            <div class="phone-screen">
+            <div class="phone-screen" data-theme="dark" id="phoneScreen">
               <div class="phone-status-bar">
-                <span class="phone-time" id="phoneClock">12:01</span>
-                <span class="phone-island" aria-hidden="true"></span>
+                <span class="phone-time" id="phoneClock">9:41</span>
+                <span class="phone-island" aria-hidden="true">
+                  <span class="phone-island-pill" id="islandPill"></span>
+                </span>
                 <span class="phone-sys" aria-hidden="true">
                   <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="3" width="2" height="7" rx="0.5"/><rect x="3.5" y="2" width="2" height="8" rx="0.5"/><rect x="7" y="0.5" width="2" height="9.5" rx="0.5"/><rect x="10.5" y="0" width="2" height="10" rx="0.5" opacity="0.35"/></svg>
                   <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><path d="M1 3.2C2.4 1.9 4.1 1.2 6 1.2s3.6.7 5 2l-.9.9C8.9 3 7.5 2.5 6 2.5S3.1 3 2 4.1L1 3.2zm2.1 2.1c.8-.8 1.8-1.2 2.9-1.2s2.1.4 2.9 1.2l-.9.9A2.7 2.7 0 0 0 6 5.2c-.7 0-1.4.3-1.9.8l-.9-.9zm2.1 2.1c.3-.3.7-.5 1.1-.5s.8.2 1.1.5L7.3 8.5 6.3 7.4z"/></svg>
@@ -72,33 +75,106 @@
                 </span>
               </div>
 
-              <div class="phone-call-state">
-                <span class="phone-live-dot"></span>
-                <span>IN CALL</span>
+              <div class="ph-stage" id="phStage">
+                <!-- 1 · Home / app selection -->
+                <div class="ph-scene is-active" data-scene="home">
+                  <div class="ph-home-bg" aria-hidden="true"></div>
+                  <div class="ph-home-clock">
+                    <div class="ph-home-date">Sunday, July 19</div>
+                    <div class="ph-home-time" id="homeBigClock">9:41</div>
+                  </div>
+                  <div class="ph-dock" id="phDock">
+                    <div class="ph-app" data-app="mail"><span class="ph-app-icon ph-app-mail">✉</span><span>Mail</span></div>
+                    <div class="ph-app" data-app="cal"><span class="ph-app-icon ph-app-cal">19</span><span>Cal</span></div>
+                    <div class="ph-app is-target" data-app="bond" id="bondApp">
+                      <span class="ph-app-icon ph-app-bond">B</span>
+                      <span>Bond</span>
+                      <span class="ph-tap" aria-hidden="true"></span>
+                    </div>
+                    <div class="ph-app" data-app="slack"><span class="ph-app-icon ph-app-slack">#</span><span>Slack</span></div>
+                  </div>
+                  <div class="ph-home-hint">Select Bond</div>
+                </div>
+
+                <!-- 2 · Chat -->
+                <div class="ph-scene" data-scene="chat">
+                  <div class="ph-chat-head">
+                    <div class="ph-chat-back" aria-hidden="true">‹</div>
+                    <div class="ph-chat-who">
+                      <div class="ph-chat-avatar">F</div>
+                      <div>
+                        <strong><span class="fredo-mark" aria-label="FREDO">FRED<span class="pill-o" aria-hidden="true"></span></span></strong>
+                        <em>Voice agent</em>
+                      </div>
+                    </div>
+                    <div class="ph-chat-online">Online</div>
+                  </div>
+                  <div class="ph-chat-stream" id="phChatStream"></div>
+                  <div class="ph-chat-compose" id="phCompose">
+                    <div class="ph-chat-input" id="phChatInput"></div>
+                    <div class="ph-chat-send" aria-hidden="true">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 3 · Dialing -->
+                <div class="ph-scene" data-scene="dial">
+                  <div class="ph-dial-rings" aria-hidden="true"><i></i><i></i><i></i></div>
+                  <div class="ph-dial-avatar">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#4A90D9" stroke-width="1.6" stroke-linecap="round"><path d="M8 4h2.5l.8 2.2L9 8.5v2l2.2 1.2L13 9.5l2.2 2.2L13 14l1.8 2.2H18M8 20c2-2 4-3 6-3s4 1 6 3"/></svg>
+                  </div>
+                  <div class="ph-dial-label">Calling…</div>
+                  <div class="ph-dial-name">Le Select Restaurant</div>
+                  <div class="ph-dial-num">+32 •••• ••42</div>
+                  <div class="ph-dial-via">via <span class="fredo-mark" aria-label="FREDO">FRED<span class="pill-o" aria-hidden="true"></span></span> Voice</div>
+                </div>
+
+                <!-- 4 · Live call -->
+                <div class="ph-scene" data-scene="call">
+                  <div class="ph-call-state">
+                    <span class="ph-live-dot"></span>
+                    <span>IN CALL</span>
+                  </div>
+                  <div class="ph-call-avatar">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4A90D9" stroke-width="1.6" stroke-linecap="round"><path d="M8 4h2.5l.8 2.2L9 8.5v2l2.2 1.2L13 9.5l2.2 2.2L13 14l1.8 2.2H18M8 20c2-2 4-3 6-3s4 1 6 3"/></svg>
+                  </div>
+                  <div class="ph-call-with">Connected with</div>
+                  <div class="ph-call-contact">Le Select Restaurant</div>
+                  <div class="ph-call-timer" id="phoneTimer">00:00</div>
+                  <div class="ph-call-label" id="phoneTimerLabel">Live · listen only</div>
+                  <div class="ph-call-wave" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                  <div class="ph-live-feed" id="phLiveFeed" aria-live="polite"></div>
+                  <div class="ph-call-privacy">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+                    End-to-end · not recorded
+                  </div>
+                </div>
+
+                <!-- 5 · Summary -->
+                <div class="ph-scene" data-scene="summary">
+                  <div class="ph-sum-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L20 7"/></svg>
+                    Call complete
+                  </div>
+                  <h3 class="ph-sum-title">Conversation summary</h3>
+                  <p class="ph-sum-meta">Le Select · <span id="phSumDuration">00:25</span></p>
+                  <div class="ph-sum-card" id="phSumCard">
+                    <div class="ph-sum-row"><em>Asked</em><span>Table for 4 at 9 PM, name Gabriel</span></div>
+                    <div class="ph-sum-row"><em>Obtained</em><span>Confirmed · table 12</span></div>
+                    <div class="ph-sum-row"><em>Decisions</em><span>Held 15 min · no deposit</span></div>
+                    <div class="ph-sum-row"><em>Next</em><span>SMS confirmation sent</span></div>
+                  </div>
+                  <div class="ph-sum-transcript" id="phSumTx">
+                    <div class="ph-tx"><b>Host</b><span>Le Select, bonsoir.</span></div>
+                    <div class="ph-tx"><b>FREDO</b><span>Table for four at 9, under Gabriel.</span></div>
+                    <div class="ph-tx"><b>Host</b><span>Confirmed — table 12 is yours.</span></div>
+                  </div>
+                </div>
               </div>
 
-              <div class="phone-avatar" aria-hidden="true">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4A90D9" stroke-width="1.6" stroke-linecap="round"><path d="M8 4h2.5l.8 2.2L9 8.5v2l2.2 1.2L13 9.5l2.2 2.2L13 14l1.8 2.2H18M8 20c2-2 4-3 6-3s4 1 6 3"/></svg>
-              </div>
-
-              <div class="phone-with">Calling</div>
-              <div class="phone-contact">Le Select Restaurant</div>
-              <div class="phone-number">+32 •••• ••42</div>
-
-              <div class="phone-timer" id="phoneTimer">00:00</div>
-              <div class="phone-timer-label" id="phoneTimerLabel">Connecting...</div>
-
-              <div class="phone-divider"></div>
-              <p class="phone-brief">Book a table for four at 9 PM under the name Gabriel.</p>
-
-              <div class="phone-wave" aria-hidden="true">
-                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-              </div>
-
-              <div class="phone-privacy">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>
-                Listen only · not recorded
-              </div>
               <div class="phone-home" aria-hidden="true"></div>
             </div>
           </div>
