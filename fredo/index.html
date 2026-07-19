@@ -64,20 +64,65 @@
           <div class="phone-bezel">
             <div class="phone-screen" data-theme="dark" id="phoneScreen">
               <div class="phone-status-bar">
-                <span class="phone-time" id="phoneClock">9:41</span>
+                <span class="phone-status-left">
+                  <span class="phone-time" id="phoneClock">9:41</span>
+                  <span class="phone-carrier" aria-hidden="true">
+                    BASE
+                    <svg class="phone-silent" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 9v-.5a3 3 0 116 0V9"/><path d="M5 9a7 7 0 0014 0"/><path d="M12 16v3"/><path d="M4 4l16 16"/></svg>
+                  </span>
+                </span>
                 <span class="phone-island" aria-hidden="true">
                   <span class="phone-island-pill" id="islandPill"></span>
+                  <svg class="phone-island-lock" width="10" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 5a3 3 0 116 0v3H9V7z"/></svg>
                 </span>
                 <span class="phone-sys" aria-hidden="true">
-                  <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="3" width="2" height="7" rx="0.5"/><rect x="3.5" y="2" width="2" height="8" rx="0.5"/><rect x="7" y="0.5" width="2" height="9.5" rx="0.5"/><rect x="10.5" y="0" width="2" height="10" rx="0.5" opacity="0.35"/></svg>
-                  <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><path d="M1 3.2C2.4 1.9 4.1 1.2 6 1.2s3.6.7 5 2l-.9.9C8.9 3 7.5 2.5 6 2.5S3.1 3 2 4.1L1 3.2zm2.1 2.1c.8-.8 1.8-1.2 2.9-1.2s2.1.4 2.9 1.2l-.9.9A2.7 2.7 0 0 0 6 5.2c-.7 0-1.4.3-1.9.8l-.9-.9zm2.1 2.1c.3-.3.7-.5 1.1-.5s.8.2 1.1.5L7.3 8.5 6.3 7.4z"/></svg>
-                  <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><rect x="0.5" y="0.5" width="18" height="9" rx="2" stroke="currentColor"/><rect x="2" y="2" width="13" height="6" rx="1" fill="currentColor"/><path d="M19.5 3v4a1.5 1.5 0 0 0 0-4z" fill="currentColor"/></svg>
+                  <span class="phone-sys-unlocked">
+                    <svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="3" width="2" height="7" rx="0.5"/><rect x="3.5" y="2" width="2" height="8" rx="0.5"/><rect x="7" y="0.5" width="2" height="9.5" rx="0.5"/><rect x="10.5" y="0" width="2" height="10" rx="0.5" opacity="0.35"/></svg>
+                    <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><path d="M1 3.2C2.4 1.9 4.1 1.2 6 1.2s3.6.7 5 2l-.9.9C8.9 3 7.5 2.5 6 2.5S3.1 3 2 4.1L1 3.2zm2.1 2.1c.8-.8 1.8-1.2 2.9-1.2s2.1.4 2.9 1.2l-.9.9A2.7 2.7 0 0 0 6 5.2c-.7 0-1.4.3-1.9.8l-.9-.9zm2.1 2.1c.3-.3.7-.5 1.1-.5s.8.2 1.1.5L7.3 8.5 6.3 7.4z"/></svg>
+                    <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><rect x="0.5" y="0.5" width="18" height="9" rx="2" stroke="currentColor"/><rect x="2" y="2" width="13" height="6" rx="1" fill="currentColor"/><path d="M19.5 3v4a1.5 1.5 0 0 0 0-4z" fill="currentColor"/></svg>
+                  </span>
+                  <span class="phone-sys-locked">
+                    <svg width="15" height="10" viewBox="0 0 16 10" fill="currentColor"><rect x="0" y="3" width="2" height="7" rx="0.5"/><rect x="3.5" y="2" width="2" height="8" rx="0.5"/><rect x="7" y="0.5" width="2" height="9.5" rx="0.5"/><rect x="10.5" y="0" width="2" height="10" rx="0.5"/></svg>
+                    <span class="phone-5g">5G</span>
+                    <span class="phone-batt">59</span>
+                    <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2.5" stroke="currentColor"/><rect x="2" y="2" width="12" height="7" rx="1.2" fill="currentColor"/><path d="M21.5 3.2v4.6a1.8 1.8 0 000-4.6z" fill="currentColor"/></svg>
+                  </span>
                 </span>
               </div>
 
               <div class="ph-stage" id="phStage">
+                <!-- 0 · Lock screen -->
+                <div class="ph-scene is-active" data-scene="lock">
+                  <div class="ph-home-bg" aria-hidden="true"></div>
+                  <div class="ph-lock-ui" id="phLockUi">
+                    <div class="ph-lock-swipe">Swipe up to unlock</div>
+                    <div class="ph-lock-time" id="lockBigClock">9:41</div>
+                    <div class="ph-lock-widgets">
+                      <div class="ph-lock-widget" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="1.8"><path d="M7 7a5 5 0 017.07 0"/><path d="M9.2 9.2a2 2 0 012.8 0"/><circle cx="12" cy="13.5" r="1.2" fill="#fff" stroke="none"/><path d="M12 14.7v3.3"/></svg>
+                        <span class="ph-lock-ring"></span>
+                      </div>
+                      <div class="ph-lock-widget ph-lock-gpt" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M12.4 3.1a4.1 4.1 0 00-3.5 2 4.1 4.1 0 00-4.3 1.3A4.1 4.1 0 003.1 11a4.1 4.1 0 00.8 3.9 4.1 4.1 0 001.3 4.3 4.1 4.1 0 003.9.8 4.1 4.1 0 003.5 2 4.1 4.1 0 003.5-2 4.1 4.1 0 004.3-1.3 4.1 4.1 0 001.5-4.6 4.1 4.1 0 00-.8-3.9 4.1 4.1 0 00-1.3-4.3A4.1 4.1 0 0016 5.1a4.1 4.1 0 00-3.6-2zM9.4 8.7l3.7-2.1a.5.5 0 01.5 0l3.7 2.1a.5.5 0 01.3.5v4.2a.5.5 0 01-.3.5l-3.7 2.1a.5.5 0 01-.5 0l-3.7-2.1a.5.5 0 01-.3-.5V9.2a.5.5 0 01.3-.5z"/></svg>
+                      </div>
+                      <div class="ph-lock-widget" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2l1.1 4.2L17 7l-3.9.8L12 12l-.1-4.2L8 7l3.9-.8L12 2zm0 12l.7 2.6L15 17l-2.3.5L12 20l-.7-2.5L9 17l2.3-.4L12 14zm7-5l.6 2.1L21 12l-1.4.4L19 14.5l-.6-2.1L17 12l1.4-.4L19 9zM5 10l.5 1.8L7 12.5l-1.5.3L5 14.5l-.5-1.7L3 12.5l1.5-.3L5 10z"/></svg>
+                      </div>
+                    </div>
+                    <div class="ph-lock-bottom">
+                      <div class="ph-lock-btn" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M9 2h6v3H9V2zm1 4h4l1.2 3H8.8L10 6zm-1.5 4h7l.5 11a1.5 1.5 0 01-1.5 1.5h-5A1.5 1.5 0 018 21L8.5 10z"/><circle cx="12" cy="14" r="1.2" fill="#1a1410"/></svg>
+                      </div>
+                      <div class="ph-lock-btn" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="13" r="3.5"/><path d="M8 7h2l1-1.5h2L14 7h2a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2z"/></svg>
+                      </div>
+                    </div>
+                    <div class="ph-lock-grab" aria-hidden="true"></div>
+                  </div>
+                </div>
+
                 <!-- 1 · Home / app selection -->
-                <div class="ph-scene is-active" data-scene="home">
+                <div class="ph-scene" data-scene="home">
                   <div class="ph-home-bg" aria-hidden="true"></div>
                   <div class="ph-home-clock">
                     <div class="ph-home-date">Sunday, July 19</div>

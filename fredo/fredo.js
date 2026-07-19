@@ -23,6 +23,7 @@
   const phoneTimerLabel = document.getElementById("phoneTimerLabel");
   const phoneClock = document.getElementById("phoneClock");
   const homeBigClock = document.getElementById("homeBigClock");
+  const lockBigClock = document.getElementById("lockBigClock");
   const islandPill = document.getElementById("islandPill");
   const bondApp = document.getElementById("bondApp");
   const phChatStream = document.getElementById("phChatStream");
@@ -30,6 +31,7 @@
   const phCompose = document.getElementById("phCompose");
   const phLiveFeed = document.getElementById("phLiveFeed");
   const phSumDuration = document.getElementById("phSumDuration");
+  const phLockUi = document.getElementById("phLockUi");
   const scenes = () => [...document.querySelectorAll(".ph-scene")];
 
   const CALL_DURATION = 20;
@@ -75,9 +77,13 @@
     if (phoneScreen) phoneScreen.dataset.theme = theme;
   }
 
+  function setLockMode(on) {
+    if (phoneScreen) phoneScreen.dataset.lock = on ? "true" : "false";
+  }
+
   function showScene(name) {
     scenes().forEach((el) => {
-      el.classList.remove("is-active", "is-exit");
+      el.classList.remove("is-active", "is-exit", "is-unlocking", "is-revealing");
     });
     const next = document.querySelector(`.ph-scene[data-scene="${name}"]`);
     if (next) {
@@ -86,17 +92,34 @@
     }
   }
 
+  async function unlockToHome() {
+    const lock = document.querySelector('.ph-scene[data-scene="lock"]');
+    const home = document.querySelector('.ph-scene[data-scene="home"]');
+    if (!lock || !home) {
+      showScene("home");
+      setLockMode(false);
+      return;
+    }
+
+    home.classList.add("is-active", "is-revealing");
+    void lock.offsetWidth;
+    lock.classList.add("is-unlocking");
+    await wait(880);
+    setLockMode(false);
+    lock.classList.remove("is-active", "is-unlocking");
+    home.classList.remove("is-revealing");
+  }
+
   function updateClocks() {
     const now = formatClock(new Date());
     if (phoneClock) phoneClock.textContent = now;
-    if (homeBigClock) {
-      const d = new Date();
-      homeBigClock.textContent = d.toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: false,
-      });
-    }
+    const big = new Date().toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: false,
+    });
+    if (homeBigClock) homeBigClock.textContent = big;
+    if (lockBigClock) lockBigClock.textContent = big;
   }
 
   function typeInto(el, text, speed = 28) {
@@ -157,9 +180,10 @@
       bondApp?.classList.remove("is-pulse", "is-tap");
       islandPill?.classList.remove("is-live");
       setTheme("dark");
-      showScene("home");
+      setLockMode(true);
+      showScene("lock");
 
-      // 1 · Entrance
+      // 1 · Entrance on lock screen
       phone.classList.remove("is-float", "is-in");
       void phone.offsetWidth;
       await new Promise((r) => requestAnimationFrame(() => {
@@ -168,6 +192,11 @@
       }));
       await wait(1750);
       phone.classList.add("is-float");
+
+      // Hold lock, then swipe-up unlock
+      await wait(1400);
+      await unlockToHome();
+      await wait(450);
 
       // 2 · App selection
       bondApp?.classList.add("is-pulse");
