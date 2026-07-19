@@ -24,6 +24,9 @@
   const phoneClock = document.getElementById("phoneClock");
   const homeBigClock = document.getElementById("homeBigClock");
   const lockBigClock = document.getElementById("lockBigClock");
+  const phHour = document.getElementById("phHour");
+  const phMin = document.getElementById("phMin");
+  const phSec = document.getElementById("phSec");
   const islandPill = document.getElementById("islandPill");
   const bondApp = document.getElementById("bondApp");
   const phChatStream = document.getElementById("phChatStream");
@@ -112,13 +115,25 @@
   function updateClocks() {
     const now = formatClock(new Date());
     if (phoneClock) phoneClock.textContent = now;
-    const big = new Date().toLocaleTimeString("en-US", {
+    const d = new Date();
+    const big = d.toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "2-digit",
       hour12: false,
     });
     if (homeBigClock) homeBigClock.textContent = big;
     if (lockBigClock) lockBigClock.textContent = big;
+    tickAnalogClock(d);
+  }
+
+  function tickAnalogClock(d = new Date()) {
+    const h = d.getHours() % 12;
+    const m = d.getMinutes();
+    const s = d.getSeconds();
+    const ms = d.getMilliseconds();
+    if (phHour) phHour.style.transform = `rotate(${h * 30 + m * 0.5}deg)`;
+    if (phMin) phMin.style.transform = `rotate(${m * 6 + s * 0.1}deg)`;
+    if (phSec) phSec.style.transform = `rotate(${s * 6 + ms * 0.006}deg)`;
   }
 
   function typeInto(el, text, speed = 28) {
@@ -292,6 +307,12 @@
 
   updateClocks();
   clockInterval = setInterval(updateClocks, 1000);
+  // Smooth second hand
+  const secRaf = () => {
+    tickAnalogClock();
+    requestAnimationFrame(secRaf);
+  };
+  requestAnimationFrame(secRaf);
   runPhoneDemo();
 
   // —— Nav solid on scroll ——

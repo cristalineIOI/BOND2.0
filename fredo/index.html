@@ -124,38 +124,99 @@
                 <!-- 1 · Home / app selection -->
                 <div class="ph-scene" data-scene="home">
                   <div class="ph-home-bg" aria-hidden="true"></div>
-                  <div class="ph-home-clock">
-                    <div class="ph-home-date">Sunday, July 19</div>
-                    <div class="ph-home-time" id="homeBigClock">9:41</div>
-                  </div>
-                  <div class="ph-dock" id="phDock">
-                    <div class="ph-app" data-app="phone">
-                      <span class="ph-app-icon">
-                        <img src="/assets/icons/apple-phone.png" alt="" width="48" height="48" draggable="false">
-                      </span>
-                      <span>Phone</span>
+                  <div class="ph-home-main">
+                    <div class="ph-ios-grid">
+                      <div class="ph-widget ph-widget-clock">
+                        <div class="ph-clock-box">
+                          <img src="/assets/icons/home/clock-widget.png" alt="" draggable="false">
+                          <div class="ph-clock-hands" aria-hidden="true">
+                            <div class="ph-hand ph-hand-hour" id="phHour"></div>
+                            <div class="ph-hand ph-hand-min" id="phMin"></div>
+                            <div class="ph-hand ph-hand-sec" id="phSec"></div>
+                            <div class="ph-hand-cap"></div>
+                          </div>
+                        </div>
+                        <span>Clock</span>
+                      </div>
+
+                      <div class="ph-app" data-app="photos">
+                        <span class="ph-app-icon"><img src="/assets/icons/home/photos.png" alt="" draggable="false"></span>
+                        <span>Photos</span>
+                      </div>
+                      <div class="ph-app" data-app="calendar">
+                        <span class="ph-app-icon"><img src="/assets/icons/home/calendar.png" alt="" draggable="false"></span>
+                        <span>Calendar</span>
+                      </div>
+                      <div class="ph-app" data-app="settings">
+                        <span class="ph-app-icon"><img src="/assets/icons/home/settings.png" alt="" draggable="false"></span>
+                        <span>Settings</span>
+                      </div>
+                      <div class="ph-app" data-app="appstore">
+                        <span class="ph-app-icon"><img src="/assets/icons/home/appstore.png" alt="" draggable="false"></span>
+                        <span>App Store</span>
+                      </div>
+
+                      <div class="ph-app" data-app="health">
+                        <span class="ph-app-icon"><img src="/assets/icons/home/health.png" alt="" draggable="false"></span>
+                        <span>Health</span>
+                      </div>
+                      <div class="ph-app" data-app="notes">
+                        <span class="ph-app-icon"><img src="/assets/icons/home/notes.png" alt="" draggable="false"></span>
+                        <span>Notes</span>
+                      </div>
+
+                      <div class="ph-widget ph-widget-weather">
+                        <div class="ph-weather-box">
+                          <div class="ph-weather-city">Amsterdam</div>
+                          <div class="ph-weather-temp">19°</div>
+                          <div class="ph-weather-cond">
+                            <img src="/assets/icons/home/weather-sun.png" alt="" width="14" height="14" draggable="false">
+                            <span>Sunny</span>
+                          </div>
+                          <div class="ph-weather-hl">↑ 20° ↓ 15°</div>
+                        </div>
+                        <span>Weather</span>
+                      </div>
+
+                      <div class="ph-app" data-app="maps">
+                        <span class="ph-app-icon"><img src="/assets/icons/home/maps.png" alt="" draggable="false"></span>
+                        <span>Maps</span>
+                      </div>
+                      <div class="ph-app" data-app="gmail">
+                        <span class="ph-app-icon"><img src="/assets/icons/home/gmail.png" alt="" draggable="false"></span>
+                        <span>Gmail</span>
+                      </div>
                     </div>
-                    <div class="ph-app" data-app="safari">
-                      <span class="ph-app-icon">
-                        <img src="/assets/icons/apple-safari.png" alt="" width="48" height="48" draggable="false">
-                      </span>
-                      <span>Safari</span>
-                    </div>
-                    <div class="ph-app is-target" data-app="bond" id="bondApp">
-                      <span class="ph-app-icon ph-app-bond" aria-hidden="true">
-                        <svg class="ph-bond-svg" viewBox="0 0 62 28" fill="none">
-                          <path fill="#281e15" d="M2 2.2h10.4c3.55 0 5.85 1.85 5.85 4.55 0 1.7-.9 3.05-2.45 3.8v.1c1.95.7 3.15 2.2 3.15 4.35 0 3.05-2.5 5.1-6.35 5.1H2V2.2zm5.05 8.05h4.85c1.7 0 2.7-.85 2.7-2.15s-1-2.1-2.7-2.1H7.05v4.25zm0 8.55h5.35c1.95 0 3.1-.95 3.1-2.45s-1.15-2.4-3.15-2.4H7.05v4.85z"/>
-                          <rect x="28.4" y="6.2" width="26" height="15.6" rx="7.8" stroke="#281e15" stroke-width="3.4" fill="none"/>
-                        </svg>
-                      </span>
-                      <span>Bond</span>
-                      <span class="ph-tap" aria-hidden="true"></span>
-                    </div>
-                    <div class="ph-app" data-app="messages">
-                      <span class="ph-app-icon">
-                        <img src="/assets/icons/apple-messages.png" alt="" width="48" height="48" draggable="false">
-                      </span>
-                      <span>Messages</span>
+
+                    <div class="ph-dock" id="phDock">
+                      <div class="ph-app" data-app="phone">
+                        <span class="ph-app-icon">
+                          <img src="/assets/icons/apple-phone.png" alt="" width="48" height="48" draggable="false">
+                        </span>
+                        <span>Phone</span>
+                      </div>
+                      <div class="ph-app" data-app="safari">
+                        <span class="ph-app-icon">
+                          <img src="/assets/icons/apple-safari.png" alt="" width="48" height="48" draggable="false">
+                        </span>
+                        <span>Safari</span>
+                      </div>
+                      <div class="ph-app is-target" data-app="bond" id="bondApp">
+                        <span class="ph-app-icon ph-app-bond" aria-hidden="true">
+                          <svg class="ph-bond-svg" viewBox="0 0 62 28" fill="none">
+                            <path fill="#281e15" d="M2 2.2h10.4c3.55 0 5.85 1.85 5.85 4.55 0 1.7-.9 3.05-2.45 3.8v.1c1.95.7 3.15 2.2 3.15 4.35 0 3.05-2.5 5.1-6.35 5.1H2V2.2zm5.05 8.05h4.85c1.7 0 2.7-.85 2.7-2.15s-1-2.1-2.7-2.1H7.05v4.25zm0 8.55h5.35c1.95 0 3.1-.95 3.1-2.45s-1.15-2.4-3.15-2.4H7.05v4.85z"/>
+                            <rect x="28.4" y="6.2" width="26" height="15.6" rx="7.8" stroke="#281e15" stroke-width="3.4" fill="none"/>
+                          </svg>
+                        </span>
+                        <span>Bond</span>
+                        <span class="ph-tap" aria-hidden="true"></span>
+                      </div>
+                      <div class="ph-app" data-app="messages">
+                        <span class="ph-app-icon">
+                          <img src="/assets/icons/apple-messages.png" alt="" width="48" height="48" draggable="false">
+                        </span>
+                        <span>Messages</span>
+                      </div>
                     </div>
                   </div>
                 </div>
