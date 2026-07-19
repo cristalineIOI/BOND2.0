@@ -860,40 +860,25 @@ button {
   display: flex;
   flex-direction: column;
   padding: 48px 14px 22px;
+  box-sizing: border-box;
 }
 
-.ph-home-clock {
-  text-align: center;
-  margin-top: 12px;
-  margin-bottom: auto;
-  flex-shrink: 0;
-}
-
-.ph-home-date {
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(250, 248, 246, 0.75);
-  letter-spacing: 0.02em;
-  margin-bottom: 6px;
-  opacity: 0;
-  animation: phRise 0.7s var(--ease) 0.2s forwards;
-}
-
-.ph-home-time {
-  font-family: "Season Mix", Georgia, serif;
-  font-size: 64px;
-  font-weight: 420;
-  letter-spacing: -0.045em;
-  line-height: 0.95;
-  opacity: 0;
-  animation: phRise 0.8s var(--ease) 0.35s forwards;
+.ph-home-apps,
+.ph-dock {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .ph-home-apps {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px 8px;
-  margin: 0 2px 18px;
+  flex-shrink: 0;
+  margin: 0;
+  padding-top: 4px;
+  padding-bottom: 0;
 }
 
 .ph-home-apps .ph-app {
@@ -913,11 +898,9 @@ button {
 .ph-dock {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  padding: 12px 10px 10px;
-  margin: 0 0 8px;
+  margin: auto 0 8px;
+  padding-top: 12px;
+  padding-bottom: 10px;
   border-radius: 24px;
   background: rgba(250, 248, 246, 0.16);
   backdrop-filter: blur(22px);

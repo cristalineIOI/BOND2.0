@@ -22,7 +22,6 @@
   const phoneTimer = document.getElementById("phoneTimer");
   const phoneTimerLabel = document.getElementById("phoneTimerLabel");
   const phoneClock = document.getElementById("phoneClock");
-  const homeBigClock = document.getElementById("homeBigClock");
   const lockBigClock = document.getElementById("lockBigClock");
   const islandPill = document.getElementById("islandPill");
   const bondApp = document.getElementById("bondApp");
@@ -117,7 +116,6 @@
       minute: "2-digit",
       hour12: false,
     });
-    if (homeBigClock) homeBigClock.textContent = big;
     if (lockBigClock) lockBigClock.textContent = big;
   }
 
