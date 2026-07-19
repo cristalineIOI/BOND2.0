@@ -620,7 +620,8 @@
   resizeInput();
 
   // —— Smooth scroll to chat ——
-  const chatSection = document.getElementById("chat");
+  const chatTarget = document.getElementById("chatShell") || document.getElementById("chat");
+  const navEl = document.getElementById("nav");
   const navMobile = document.getElementById("navMobile");
   let chatScrollRaf = 0;
 
@@ -629,16 +630,15 @@
   }
 
   function scrollToChat({ focus = true } = {}) {
-    if (!chatSection) return;
+    if (!chatTarget) return;
 
     navMobile?.classList.remove("is-open");
     shell?.classList.add("is-in");
 
-    const navH =
-      parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 72;
+    const navH = navEl?.offsetHeight || 72;
     const targetY = Math.max(
       0,
-      chatSection.getBoundingClientRect().top + window.scrollY - navH - 12
+      chatTarget.getBoundingClientRect().top + window.scrollY - navH
     );
     const startY = window.scrollY;
     const distance = targetY - startY;
