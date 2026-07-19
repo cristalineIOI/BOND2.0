@@ -136,6 +136,7 @@ button {
 .nav-cta {
   display: inline-flex;
   align-items: center;
+  gap: 0.35em;
   height: 36px;
   padding: 0 16px;
   border-radius: 8px;
