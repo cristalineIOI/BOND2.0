@@ -109,8 +109,8 @@ button {
   width: 128px;
   height: 26px;
   background: var(--cream);
-  -webkit-mask: url(/assets/logo-bond-2-mask.png?v=3) center / 100% 100% no-repeat;
-  mask: url(/assets/logo-bond-2-mask.png?v=3) center / 100% 100% no-repeat;
+  -webkit-mask: url(/assets/logo-bond-2-mask.png?v=4) center / 100% 100% no-repeat;
+  mask: url(/assets/logo-bond-2-mask.png?v=4) center / 100% 100% no-repeat;
   flex-shrink: 0;
 }
 

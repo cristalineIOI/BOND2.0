@@ -1,6 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 28" fill="none" role="img" aria-label="BOND">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 28" fill="none" role="img" aria-label="BOND 2.0">
   <path fill="currentColor" d="M2 2.2h10.4c3.55 0 5.85 1.85 5.85 4.55 0 1.7-.9 3.05-2.45 3.8v.1c1.95.7 3.15 2.2 3.15 4.35 0 3.05-2.5 5.1-6.35 5.1H2V2.2zm5.05 8.05h4.85c1.7 0 2.7-.85 2.7-2.15s-1-2.1-2.7-2.1H7.05v4.25zm0 8.55h5.35c1.95 0 3.1-.95 3.1-2.45s-1.15-2.4-3.15-2.4H7.05v4.85z"/>
   <rect x="26.2" y="5.2" width="30" height="17.6" rx="8.8" stroke="currentColor" stroke-width="4.2" fill="none"/>
   <path fill="currentColor" d="M64.5 2.2h5.2l9.55 14.9V2.2h4.85v23.6h-5.2L69.25 10.7v15.1H64.5V2.2z"/>
   <path fill="currentColor" d="M89.2 2.2h11.1c7.05 0 11.45 4.15 11.45 11.8S107.35 25.8 100.3 25.8H89.2V2.2zm5.05 19.55h5.55c4.35 0 6.85-2.55 6.85-7.75s-2.5-7.75-6.85-7.75h-5.55v15.5z"/>
+  <text x="117" y="20.5" fill="currentColor" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13.5" font-weight="450" letter-spacing="0.02em">2.0</text>
 </svg>
