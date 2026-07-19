@@ -292,9 +292,10 @@
   clockInterval = setInterval(updateClocks, 1000);
   runPhoneDemo();
 
-  // —— Nav solid on scroll ——
+  // —— Nav: floating pill on scroll (matches Bond site) ——
   const onScroll = () => {
-    nav?.classList.toggle("is-solid", window.scrollY > 40);
+    const y = window.scrollY;
+    nav?.classList.toggle("is-solid", y > 24);
   };
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
