@@ -592,11 +592,6 @@ button {
   letter-spacing: -0.02em;
 }
 
-.phone-batt {
-  font-size: 10px;
-  font-weight: 600;
-}
-
 .phone-island-lock {
   display: none;
   color: #fff;
